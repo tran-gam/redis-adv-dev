@@ -29,11 +29,9 @@ export function generatePlayerComponents(k, pos) {
 }
 
 export function setPlayerControls(k, player) {
-  k.onKeyPress("1", () => {
-    if (k.isKeyDown("control") && k.isKeyDown("alt")) {
-      let result = savePlayerData("12345", player.worldPos());
-      console.log("Player data saved:", result);
-    }
+  k.onKeyPress("!", () => {
+    let result = savePlayerData("12345", player.worldPos());
+    console.log("Player data saved:", result);
   });
 
   k.onKeyPress("space", () => {
