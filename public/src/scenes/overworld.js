@@ -1,84 +1,62 @@
 import { playerState } from "../states/stateManager.js";
-import {
-  generatePlayerComponents,
-  setPlayerControls,
-} from "../entities/player.js";
-import { colorizeBackground, fetchMapData, drawCollisions } from "../utils.js";
+import { generatePlayerComponents, setPlayerControls } from "../entities/player.js";
+import { setBackgroundColor, fetchMapData, generateCollision, generateLink } from "../utils/utils.js";
 
 export default async function overworld(k) {
   // const previousScene = gameState.getPreviousScene();
-  colorizeBackground(k, 71, 171, 169);
-  // const mapData = await fetchMapData("./assets/maps/world.json");
 
-  const map = k.add([k.sprite("map"), k.pos(0)]);
+  setBackgroundColor("#47ABA9");
+
+  //TODO: loading screen
+  const collisionData = await fetchMapData("./assets/data/protoIsland.json");
+
+  //render base map layer and collisions
+  const map = k.add([k.sprite("protoIsland"), k.pos(0)]);
+  generateCollision(map, collisionData, k.vec2(0, 0), 1);
+  generateLink(map, "redis.io", "https://redis.io", k.vec2(1000, 400));
+  generateLink(map, "Try Redis", "https://redis.io/try-free/", k.vec2(1000, 425));
+
+  //add interaction to single object
+  // map.get("cave")[0].on("onInteract", () => {
+  //   console.log("Interacted with cave");
+  //   k.go("cave");
+  // });
+
+  //add interaction to all objects with same tag (e.g. castle)
+  k.on("onInteract", "castle", () => {
+    console.log("Interacted with castle");
+    k.go("castle");
+  });
+
+  // map.get("castle").forEach((castle) => {
+  //   castle.on("onInteract", () => {
+  //     console.log("Interacted with castle");
+  //   });
+  // });
+
+  // console.log(map.get("castle")[0]);
 
   const entities = {
     player: null,
     slimes: [],
   };
 
-  entities.player = map.add(
-    generatePlayerComponents(
-      k,
-      k.vec2(playerState.getPosition().x, playerState.getPosition().y)
-    )
-    // generatePlayerComponents(k, k.vec2(500, 400))
-  );
-
-  // const layers = mapData.layers;
-  // for (const layer of layers) {
-  //     if (layer.name === "Boundaries") {
-  //     drawBoundaries(k, map, layer);
-  //     continue;
-  //     }
-
-  //     if (layer.name === "SpawnPoints") {
-  //     for (const object of layer.objects) {
-  //         if (object.name === "player-dungeon" && previousScene === "dungeon") {
-  //         entities.player = map.add(
-  //             generatePlayerComponents(k, k.vec2(object.x, object.y))
-  //         );
-  //         continue;
-  //         }
-
-  //         if (
-  //         object.name === "player" &&
-  //         (!previousScene || previousScene === "house")
-  //         ) {
-  //         entities.player = map.add(
-  //             generatePlayerComponents(k, k.vec2(object.x, object.y))
-  //         );
-  //         continue;
-  //         }
-
-  //         if (object.name === "slime") {
-  //         entities.slimes.push(
-  //             map.add(generateSlimeComponents(k, k.vec2(object.x, object.y)))
-  //         );
-  //         }
-  //     }
-  //     continue;
-  //     }
-
-  //     drawTiles(k, map, layer, mapData.tileheight, mapData.tilewidth);
-  // }
-
+  //spawn player
+  entities.player = k.add(generatePlayerComponents(k));
   setPlayerControls(k, entities.player);
-  // entities.player.onCollide("door-entrance", () => k.go("house"));
-  // entities.player.onCollide("dungeon-door-entrance", () => k.go("dungeon"));
 
-  k.camPos(entities.player.worldPos());
-  k.onUpdate(async () => {
-    if (entities.player.pos.dist(k.camPos()) > 3) {
-      await k.tween(
-        k.camPos(),
-        entities.player.worldPos(),
-        0.15,
-        (newPos) => k.camPos(newPos),
-        k.easings.linear
-      );
-    }
-  });
+  //spawn enemies
+  // const enemySpawnPoints = k.get("enemy");
+  // for (const enemySpawnPoint of enemySpawnPoints) {
+  //   k.add([
+  //     k.sprite("spritesheet", { frame: 35 }),
+  //     k.area({ shape: new k.Rect(k.vec2(0, 7), 16, 16) }),
+  //     k.anchor("center"),
+  //     k.scale(2),
+  //     k.pos(enemySpawnPoint.pos),
+  //     k.body(),
+  //   ]);
+  // }
 
   //   for (const slime of entities.slimes) {
   //     setSlimeAI(k, slime);
@@ -86,8 +64,27 @@ export default async function overworld(k) {
   //     onCollideWithPlayer(k, slime);
   //   }
 
+  //render top map layer
+  map.add = k.add([k.sprite("protoIsland1"), k.pos(0)]);
+
+  //scene transitions
+  entities.player.onCollide("cave", () => k.go("cave"));
+  // entities.player.onCollide("door-entrance", () => k.go("house"));
+  // entities.player.onCollide("dungeon-door-entrance", () => k.go("dungeon"));
+
+  //render UI
   //   healthBar(k);
   //   watchPlayerHealth(k);
 
-  k.camScale(2);
+  //camera follow player
+  k.setCamPos(entities.player.worldPos());
+  k.onUpdate(async () => {
+    // k.setCamPos(entities.player.pos, k.getCamPos());
+    // console.log("FPS: " + k.debug.fps());
+    if (entities.player.pos.dist(k.getCamPos()) > 3) {
+      await k.tween(k.getCamPos(), entities.player.worldPos(), 0.15, (newPos) => k.setCamPos(newPos), k.easings.linear);
+    }
+  });
+
+  k.setCamScale(1);
 }

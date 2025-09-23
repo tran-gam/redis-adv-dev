@@ -1,4 +1,4 @@
-export default function gameStateBase() {
+export default function gameStateSingleton() {
   let instance = null;
 
   function createInstance() {
@@ -37,6 +37,7 @@ export default function gameStateBase() {
     };
   }
 
+  //singleton
   return {
     getInstance() {
       if (!instance) {

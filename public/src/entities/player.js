@@ -1,20 +1,19 @@
-// import { gameState, playerState } from "../state/stateManagers.js";
-import {
-  areAnyOfTheseKeysDown,
-  playAnimIfNotPlaying,
-  savePlayerData,
-} from "../utils.js";
+import { gameState, playerState } from "../states/stateManager.js";
+import { areAnyOfTheseKeysDown, playAnimIfNotPlaying } from "../utils/utils.js";
+import { savePlayerData } from "../utils/saveload.js";
 
-export function generatePlayerComponents(k, pos) {
+export function generatePlayerComponents(k) {
   return [
     k.sprite("player", {
       anim: "idle-down",
     }),
-    k.area({ shape: new k.Rect(k.vec2(3, 4), 10, 12) }),
+    k.area({ shape: new k.Rect(k.vec2(0, 20), 64, 40) }),
     k.body(),
-    k.pos(pos),
+    k.pos(playerState.getPosition().x, playerState.getPosition().y),
     k.opacity(),
     k.scale(0.75),
+    k.doubleJump(2),
+    k.anchor("center"),
     {
       speed: 200,
       attackPower: 1,
@@ -30,34 +29,45 @@ export function generatePlayerComponents(k, pos) {
 
 export function setPlayerControls(k, player) {
   k.onKeyPress("!", () => {
+    //sessionId, data obj
     let result = savePlayerData("12345", player.worldPos());
     console.log("Player data saved:", result);
   });
 
   k.onKeyPress("space", () => {
     if (player.isFrozen || player.isAttacking) return;
+
+    player.doubleJump();
+  });
+
+  k.onKeyPress("e", () => {
+    // k.debug.log(player);
+    if (player.getCollisions().length === 0) return;
+    k.debug.log("Interacted with " + player.getCollisions()[0].target.tags[1]);
+    player.getCollisions()[0].target.trigger("onInteract");
+  });
+
+  k.onKeyPress("f", () => {
+    if (player.isFrozen || player.isAttacking) return;
     player.isAttacking = true;
 
-    playAnimIfNotPlaying(
-      player,
-      `attack${player.attackCombo}-${player.direction}`
-    );
+    player.play(`attack${player.attackCombo}-${player.direction}`);
 
-    k.wait(0.6, () => {
-      player.isAttacking = false;
+    // increment attack combo or reset to 1 if at max
+    player.attackCombo = player.attackCombo < player.attackComboMax ? player.attackCombo + 1 : 1;
 
-      // Reset attack combo after the attack animation finishes
-      player.attackCombo =
-        player.attackCombo < player.attackComboMax ? player.attackCombo + 1 : 1;
-      playAnimIfNotPlaying(player, `idle-${player.direction}`);
-    });
+    //wait for attack animation to finish
+    // k.wait(0.5, () => {
+    //   player.isAttacking = false;
+    //   playAnimIfNotPlaying(player, `idle-${player.direction}`);
+    // });
   });
 
   k.onKeyDown((key) => {
     // if (gameState.getFreezePlayer()) return;
     if (player.isFrozen || player.isAttacking) return;
     if (["left"].includes(key)) {
-      if (areAnyOfTheseKeysDown(k, ["up", "down"])) return;
+      if (areAnyOfTheseKeysDown(["up", "down"])) return;
       player.flipX = true;
       playAnimIfNotPlaying(player, "run-side");
       player.move(-player.speed, 0);
@@ -66,7 +76,7 @@ export function setPlayerControls(k, player) {
     }
 
     if (["right"].includes(key)) {
-      if (areAnyOfTheseKeysDown(k, ["up", "down"])) return;
+      if (areAnyOfTheseKeysDown(["up", "down"])) return;
       player.flipX = false;
       playAnimIfNotPlaying(player, "run-side");
       player.move(player.speed, 0);
@@ -102,5 +112,14 @@ export function setPlayerControls(k, player) {
     // if (k.isKeyDown("space")) return;
 
     // if(!player.isAttacking) playAnimIfNotPlaying(player, `idle-${player.direction}`);
+  });
+
+  //on animation end
+  player.onAnimEnd((anim) => {
+    if (anim.substring(0, 6) === "attack") {
+      console.log("Attack animation ended");
+      player.isAttacking = false;
+      playAnimIfNotPlaying(player, `idle-${player.direction}`);
+    }
   });
 }

@@ -1,5 +1,5 @@
-import gameStateBase from "./gameStateBase.js";
-import playerStateBase from "./playerStateBase.js";
+import gameStateSingleton from "./gameState.js";
+import playerStateSingleton from "./playerState.js";
 
-export const gameState = gameStateBase().getInstance();
-export const playerState = playerStateBase().getInstance();
+export const gameState = gameStateSingleton().getInstance();
+export const playerState = playerStateSingleton().getInstance();

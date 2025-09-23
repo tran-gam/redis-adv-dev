@@ -1,9 +1,16 @@
 import k from "./kaplayContext.js";
 import overworld from "./scenes/overworld.js";
 import mainMenu from "./scenes/mainMenu.js";
+import cave from "./scenes/cave.js";
+import castle from "./scenes/castle.js";
+import home from "./scenes/home.js";
 
-k.loadFont("gameboy", "assets/gb.ttf");
-k.loadSprite("map", "assets/map.png");
+//load assets
+k.loadFont("gameboy", "assets/PressStart2P.ttf");
+k.loadSprite("map", "assets/maps/map.png");
+k.loadSprite("protoIsland", "assets/maps/protoIsland.png");
+k.loadSprite("protoIsland1", "assets/maps/protoIsland1.png");
+k.loadSprite("cave", "assets/maps/cave.png");
 k.loadSprite("player", "assets/player.png", {
   sliceX: 6,
   sliceY: 12,
@@ -23,9 +30,13 @@ k.loadSprite("player", "assets/player.png", {
   },
 });
 
+//create scenes
 const scenes = {
   mainMenu,
   overworld,
+  cave,
+  castle,
+  home,
   //   house,
   //   dungeon,
 };

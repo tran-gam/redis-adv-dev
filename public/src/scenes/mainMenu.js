@@ -1,10 +1,11 @@
 // import mainMenuText from "../content/mainMenuText.js";
 // import { gameState } from "../state/stateManagers.js";
 import { playerState } from "../states/stateManager.js";
-import { fetchPlayerData, colorizeBackground } from "../utils.js";
+import { setBackgroundColor } from "../utils/utils.js";
+import { loadPlayerData } from "../utils/saveload.js";
 
 export default function mainMenu(k) {
-  colorizeBackground(k, "black");
+  setBackgroundColor("#000000");
 
   k.add([
     k.text("Redis Adventure", { size: 32, font: "gameboy" }),
@@ -27,24 +28,31 @@ export default function mainMenu(k) {
     k.pos(k.center().x, k.center().y + 150),
   ]);
 
-  k.onKeyPress("f", () => {
+  k.onKeyPress("f", async () => {
     // gameState.loadFromRedis();
-    fetchPlayerData("12345")
-      .then((data) => {
-        console.log(
-          "Player data loaded:",
-          data.documents[0].value.x + ", " + data.documents[0].value.y
-        );
-        playerState.setPosition(
-          data.documents[0].value.x,
-          data.documents[0].value.y
-        );
-        k.go("overworld");
-      })
-      .catch((error) => {
-        console.error("Error loading player data:", error);
-      });
+    const data = await loadPlayerData("12345");
+    console.log("Player data loaded:", data.documents[0].value.x + ", " + data.documents[0].value.y);
+
+    playerState.setPosition(data.documents[0].value.x, data.documents[0].value.y);
+
+    k.go("overworld");
   });
+
+  //load map data before going to overworld scene
+  // let mapData;
+  // k.scene("loading", async () => {
+  //   k.add([k.rect(k.width(), k.height()), k.color(0, 0, 0)]);
+  //   k.add([
+  //     k.text("Loading...", { size: 32, font: "gameboy" }),
+  //     k.pos(k.center().x, k.center().y),
+  //     k.anchor("center"),
+  //   ]);
+
+  //   const mapResponse = await fetch("assets/data/protoIsland.json");
+  //   mapData = await mapResponse.json();
+
+  //   k.go("oveworld", { mapData });
+  // });
 
   k.onKeyPress("enter", () => {
     k.go("overworld");

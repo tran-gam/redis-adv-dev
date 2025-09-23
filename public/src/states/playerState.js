@@ -1,4 +1,4 @@
-export default function playerStateBase() {
+export default function playerStateSingleton() {
   let instance = null;
 
   function createInstance() {
@@ -6,7 +6,7 @@ export default function playerStateBase() {
     const maxHealth = 3;
     let health = maxHealth;
     let hasKey = false;
-    let position = { x: 450, y: 400 };
+    let position = { x: 1500, y: 200 };
 
     return {
       setIsSwordEquipped(value) {
@@ -30,6 +30,7 @@ export default function playerStateBase() {
     };
   }
 
+  //singleton
   return {
     getInstance() {
       if (!instance) {

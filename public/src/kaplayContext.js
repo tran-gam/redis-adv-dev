@@ -5,6 +5,7 @@ const k = kaplay({
   height: 720,
   letterbox: true,
   global: false,
+  debug: true,
 });
 
 export default k;
