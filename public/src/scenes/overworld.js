@@ -1,5 +1,5 @@
 import { playerState } from "../states/stateManager.js";
-import { generatePlayerComponents, setPlayerControls } from "../entities/player.js";
+import { playerTopDown, setControlsTopDown } from "../entities/player.js";
 import { setBackgroundColor, fetchMapData, generateCollision, generateLink } from "../utils/utils.js";
 
 export default async function overworld(k) {
@@ -42,8 +42,8 @@ export default async function overworld(k) {
   };
 
   //spawn player
-  entities.player = k.add(generatePlayerComponents(k));
-  setPlayerControls(k, entities.player);
+  entities.player = k.add(playerTopDown(k));
+  setControlsTopDown(k, entities.player);
 
   //spawn enemies
   // const enemySpawnPoints = k.get("enemy");

@@ -6,7 +6,7 @@ export default function playerStateSingleton() {
     const maxHealth = 3;
     let health = maxHealth;
     let hasKey = false;
-    let position = { x: 1500, y: 200 };
+    let position = { x: 1600, y: 200 };
 
     return {
       setIsSwordEquipped(value) {

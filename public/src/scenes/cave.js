@@ -1,16 +1,10 @@
 import { setBackgroundColor, fetchMapData, generateCollision } from "../utils/utils.js";
-import { generatePlayerComponents, setPlayerControls } from "../entities/player.js";
+import { playerSideScrolling, setControlsSideScrolling } from "../entities/player.js";
 import { playerState } from "../states/stateManager.js";
+import { clamp } from "../utils/utils.js";
 
 export default async function cave(k) {
-  setBackgroundColor("#000000");
-
-  // k.add([
-  //   k.text("Lair of Latency (Goblins)", { size: 32, font: "gameboy" }),
-  //   k.area(),
-  //   k.anchor("center"),
-  //   k.pos(k.center().x, k.center().y - 100),
-  // ]);
+  setBackgroundColor("#313131");
 
   const collisionData = await fetchMapData("./assets/data/caveCollision.json");
 
@@ -25,8 +19,14 @@ export default async function cave(k) {
 
   //spawn player
   playerState.setPosition(200, 700);
-  entities.player = k.add(generatePlayerComponents(k));
-  setPlayerControls(k, entities.player);
+  entities.player = k.add(playerSideScrolling(k));
+  setControlsSideScrolling(k, entities.player);
+
+  entities.player.onCollide("exit", () => {
+    k.setGravity(0);
+    playerState.setPosition(1625, 200);
+    k.go("overworld");
+  });
 
   //camera follow player
   k.setCamPos(entities.player.worldPos());
@@ -34,10 +34,28 @@ export default async function cave(k) {
     // k.setCamPos(entities.player.pos, k.getCamPos());
     // console.log("FPS: " + k.debug.fps());
     if (entities.player.pos.dist(k.getCamPos()) > 3) {
-      await k.tween(k.getCamPos(), entities.player.worldPos(), 0.15, (newPos) => k.setCamPos(newPos), k.easings.linear);
+      await k.tween(
+        k.getCamPos(),
+        k.vec2(entities.player.worldPos().x, clamp(entities.player.worldPos().y, 350, 450)),
+        0.15,
+        (newPos) => k.setCamPos(newPos),
+        k.easings.linear
+      );
     }
   });
 
   k.setCamScale(1);
   k.setGravity(1000);
+
+  k.add([
+    k.text("Lair\nof\nLatency\n(Goblins)", { size: 28, font: "gameboy", align: "center" }),
+    // k.area(),
+    // k.anchor("center"),
+    k.pos(-300, 500),
+    "title",
+  ]);
+
+  k.wait(5, () => {
+    k.destroy(k.get("title")[0]);
+  });
 }

@@ -99,3 +99,7 @@ export function onAttacked(k, entity) {
     entity.hurt(1);
   });
 }
+
+export function clamp(num, min, max) {
+  return num <= min ? min : num >= max ? max : num;
+}
