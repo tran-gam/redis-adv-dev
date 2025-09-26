@@ -1,10 +1,9 @@
-import { playerState } from "../states/stateManager.js";
+import { setBackgroundColor, generateCollision, generateLink } from "../utils/utils.js";
+import { fetchMapData } from "../utils/saveload.js";
 import { playerTopDown, setControlsTopDown } from "../entities/player.js";
-import { setBackgroundColor, fetchMapData, generateCollision, generateLink } from "../utils/utils.js";
+import { playerState, gameState } from "../states/stateManager.js";
 
 export default async function overworld(k) {
-  // const previousScene = gameState.getPreviousScene();
-
   setBackgroundColor("#47ABA9");
 
   //TODO: loading screen
@@ -16,6 +15,7 @@ export default async function overworld(k) {
   generateLink(map, "redis.io", "https://redis.io", k.vec2(1000, 400));
   generateLink(map, "Try Redis", "https://redis.io/try-free/", k.vec2(1000, 425));
 
+  //add interactions
   //add interaction to single object
   // map.get("cave")[0].on("onInteract", () => {
   //   console.log("Interacted with cave");
@@ -27,14 +27,6 @@ export default async function overworld(k) {
     console.log("Interacted with castle");
     k.go("castle");
   });
-
-  // map.get("castle").forEach((castle) => {
-  //   castle.on("onInteract", () => {
-  //     console.log("Interacted with castle");
-  //   });
-  // });
-
-  // console.log(map.get("castle")[0]);
 
   const entities = {
     player: null,
@@ -67,14 +59,14 @@ export default async function overworld(k) {
   //render top map layer
   map.add = k.add([k.sprite("protoIsland1"), k.pos(0)]);
 
+  //render UI
+  //   healthBar(k);
+  //   watchPlayerHealth(k);
+
   //scene transitions
   entities.player.onCollide("cave", () => k.go("cave"));
   // entities.player.onCollide("door-entrance", () => k.go("house"));
   // entities.player.onCollide("dungeon-door-entrance", () => k.go("dungeon"));
-
-  //render UI
-  //   healthBar(k);
-  //   watchPlayerHealth(k);
 
   //camera follow player
   k.setCamPos(entities.player.worldPos());
@@ -82,9 +74,15 @@ export default async function overworld(k) {
     // k.setCamPos(entities.player.pos, k.getCamPos());
     // console.log("FPS: " + k.debug.fps());
     if (entities.player.pos.dist(k.getCamPos()) > 3) {
-      await k.tween(k.getCamPos(), entities.player.worldPos(), 0.15, (newPos) => k.setCamPos(newPos), k.easings.linear);
+      await k.tween(
+        k.getCamPos(),
+        entities.player.worldPos(),
+        0.15,
+        (newPos) => k.setCamPos(newPos),
+        k.easings.linear
+      );
     }
   });
 
-  k.setCamScale(1);
+  // k.setCamScale(1);
 }

@@ -1,7 +1,7 @@
-import { setBackgroundColor, fetchMapData, generateCollision } from "../utils/utils.js";
+import { setBackgroundColor, clamp, generateCollision } from "../utils/utils.js";
+import { fetchMapData } from "../utils/saveload.js";
 import { playerSideScrolling, setControlsSideScrolling } from "../entities/player.js";
-import { playerState } from "../states/stateManager.js";
-import { clamp } from "../utils/utils.js";
+import { playerState, gameState } from "../states/stateManager.js";
 
 export default async function cave(k) {
   setBackgroundColor("#313131");
@@ -12,19 +12,27 @@ export default async function cave(k) {
   const map = k.add([k.sprite("cave"), k.pos(0, 0), k.scale(2)]);
   generateCollision(map, collisionData, k.vec2(0, -32), 1);
 
+  //add interactions
+
   const entities = {
     player: null,
-    slimes: [],
   };
 
   //spawn player
-  playerState.setPosition(200, 700);
+  playerState.set("position", { x: 200, y: 700 });
   entities.player = k.add(playerSideScrolling(k));
   setControlsSideScrolling(k, entities.player);
 
+  //spawn enemies
+
+  //render top map layer
+
+  //render UI
+
+  //scene transitions
   entities.player.onCollide("exit", () => {
     k.setGravity(0);
-    playerState.setPosition(1625, 200);
+    playerState.set("position", { x: 1625, y: 200 });
     k.go("overworld");
   });
 
@@ -44,9 +52,10 @@ export default async function cave(k) {
     }
   });
 
-  k.setCamScale(1);
+  // k.setCamScale(1);
   k.setGravity(1000);
 
+  //level title, disappears after 5 seconds
   k.add([
     k.text("Lair\nof\nLatency\n(Goblins)", { size: 28, font: "gameboy", align: "center" }),
     // k.area(),

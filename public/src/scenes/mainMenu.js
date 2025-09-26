@@ -1,6 +1,5 @@
 // import mainMenuText from "../content/mainMenuText.js";
-// import { gameState } from "../state/stateManagers.js";
-import { playerState } from "../states/stateManager.js";
+
 import { setBackgroundColor } from "../utils/utils.js";
 import { loadPlayerData } from "../utils/saveload.js";
 
@@ -30,10 +29,7 @@ export default function mainMenu(k) {
 
   k.onKeyPress("f", async () => {
     // gameState.loadFromRedis();
-    const data = await loadPlayerData("12345");
-    console.log("Player data loaded:", data.documents[0].value.x + ", " + data.documents[0].value.y);
-
-    playerState.setPosition(data.documents[0].value.x, data.documents[0].value.y);
+    await loadPlayerData("12345");
 
     k.go("overworld");
   });

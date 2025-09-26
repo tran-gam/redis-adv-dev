@@ -21,10 +21,6 @@ export function setBackgroundColor(hexColor) {
   k.add([k.rect(k.canvas.width, k.canvas.height), k.color(k.Color.fromHex(hexColor)), k.fixed()]);
 }
 
-export async function fetchMapData(mapPath) {
-  return await (await fetch(mapPath)).json();
-}
-
 export function generateCollision(map, collisionData, position, scale) {
   for (const layer of collisionData.layers) {
     if (layer.type !== "objectgroup") continue;

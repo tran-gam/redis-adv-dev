@@ -2,31 +2,23 @@ export default function playerStateSingleton() {
   let instance = null;
 
   function createInstance() {
-    let isSwordEquipped = false;
-    const maxHealth = 3;
-    let health = maxHealth;
-    let hasKey = false;
-    let position = { x: 1600, y: 200 };
+    const state = {
+      isSwordEquipped: false,
+      maxHealth: 3,
+      health: 3,
+      position: { x: 1600, y: 200 },
+    };
 
     return {
-      setIsSwordEquipped(value) {
-        isSwordEquipped = value;
+      get() {
+        //using spread operator to return a copy of the state object
+        //ensures that modifications to the copy do not affect the original state
+        return { ...state };
       },
-      getIsSwordEquipped: () => isSwordEquipped,
-      getMaxHealth: () => maxHealth,
-      setHealth(value) {
-        health = value;
+
+      set(property, value) {
+        state[property] = value;
       },
-      getHealth: () => health,
-      setHasKey(value) {
-        hasKey = value;
-      },
-      getHasKey: () => hasKey,
-      setPosition(x, y) {
-        position.x = x;
-        position.y = y;
-      },
-      getPosition: () => position,
     };
   }
 

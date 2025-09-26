@@ -2,38 +2,22 @@ export default function gameStateSingleton() {
   let instance = null;
 
   function createInstance() {
-    let previousScene = null;
-    let freezePlayer = false;
-    let locale = "english";
-    let fontSize = 30;
-    let isGhostDefeated = false;
-    let isSonSaved = false;
+    const state = {
+      previousScene: null,
+      overworldFire: false,
+      lairOfLatencyDefeated: false,
+    };
 
     return {
-      setPreviousScene(sceneName) {
-        previousScene = sceneName;
+      get() {
+        //using spread operator to return a copy of the state object
+        //ensures that modifications to the copy do not affect the original state
+        return { ...state };
       },
-      getPreviousScene: () => previousScene,
-      setFreezePlayer(value) {
-        freezePlayer = value;
+
+      set(property, value) {
+        state[property] = value;
       },
-      getFreezePlayer: () => freezePlayer,
-      setLocale(language) {
-        locale = language;
-      },
-      getLocale: () => locale,
-      setFontSize(size) {
-        fontSize = size;
-      },
-      getFontSize: () => fontSize,
-      setIsGhostDefeated(value) {
-        isGhostDefeated = value;
-      },
-      getIsGhostDefeated: () => isGhostDefeated,
-      setIsSonSaved(value) {
-        isSonSaved = value;
-      },
-      getIsSonSaved: () => isSonSaved,
     };
   }
 

@@ -1,5 +1,20 @@
-// Functions to load and save player and map data
+import { playerState, gameState } from "../states/stateManager.js";
+
 export async function loadPlayerData(playerId) {
+  const data = await fetchPlayerData(playerId);
+
+  if (data.documents.length === 0) {
+    console.log("No save file found.");
+    return null;
+  }
+  //load player data into player state
+  playerState.set("position", { x: data.documents[0].value.x, y: data.documents[0].value.y });
+  console.log("Player data loaded:", data.documents[0].value.x + ", " + data.documents[0].value.y);
+}
+
+export async function fetchPlayerData(playerId) {
+  // fetch player data from backend API
+  // "http://localhost:3000" is removed from fetch URL because it's the same origin
   const response = await fetch(`/api/?id=${playerId}`);
   if (!response.ok) {
     throw new Error(`Error fetching player data: ${response.statusText}`);
@@ -33,7 +48,7 @@ export async function savePlayerData(playerId, pos) {
 }
 
 export async function createPlayerData(playerId, playerName, pos) {
-  const response = await fetch(`http://localhost:3000/api/`, {
+  const response = await fetch(`/api/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,4 +65,8 @@ export async function createPlayerData(playerId, playerName, pos) {
     throw new Error(`Error saving player data: ${response.statusText}`);
   }
   return await response.json();
+}
+
+export async function fetchMapData(mapPath) {
+  return await (await fetch(mapPath)).json();
 }

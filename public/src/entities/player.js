@@ -10,11 +10,11 @@ export function playerTopDown(k) {
     }),
     k.area({ shape: new k.Rect(k.vec2(0, 20), 55, 40) }),
     k.body(),
-    k.pos(playerState.getPosition().x, playerState.getPosition().y),
+    k.pos(playerState.get().position.x, playerState.get().position.y),
     k.opacity(),
     k.scale(0.75),
     k.anchor("center"),
-    k.health(playerState.getHealth()),
+    k.health(playerState.get().health),
     {
       speed: 200,
       attackPower: 1,
@@ -107,7 +107,7 @@ export function setControlsTopDown(k, player) {
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
       console.log("Attack animation ended");
-      k.destroy(player.get("swordHitBox")[0]);
+      if (player.get("swordHitBox")[0]) k.destroy(player.get("swordHitBox")[0]);
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
     }
@@ -127,12 +127,12 @@ export function playerSideScrolling(k) {
     k.area({ shape: new k.Rect(k.vec2(0, 0), 45, 60) }),
     // k.body({ mass: 100, jumpForce: 600 }),
     k.body(),
-    k.pos(playerState.getPosition().x, playerState.getPosition().y),
+    k.pos(playerState.get().position.x, playerState.get().position.y),
     k.opacity(),
     k.scale(1),
     k.doubleJump(2),
     k.anchor("center"),
-    k.health(playerState.getHealth()),
+    k.health(playerState.get().health),
     {
       speed: 200,
       attackPower: 1,
