@@ -14,8 +14,8 @@ export async function loadPlayerData(playerId) {
 
 export async function fetchPlayerData(playerId) {
   // fetch player data from backend API
-  // "http://localhost:3000" is removed from fetch URL because it's the same origin
-  const response = await fetch(`/api/?id=${playerId}`);
+  // "http://localhost:3000" can be removed from fetch URL because it's the same origin
+  const response = await fetch(`http://localhost:3000/api/?id=${playerId}`);
   if (!response.ok) {
     throw new Error(`Error fetching player data: ${response.statusText}`);
   }
@@ -23,7 +23,7 @@ export async function fetchPlayerData(playerId) {
 }
 
 export async function savePlayerData(playerId, pos) {
-  let response = await fetch(`/api/`, {
+  let response = await fetch(`http://localhost:3000/api/`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export async function savePlayerData(playerId, pos) {
 }
 
 export async function createPlayerData(playerId, playerName, pos) {
-  const response = await fetch(`/api/`, {
+  const response = await fetch(`http://localhost:3000/api/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
