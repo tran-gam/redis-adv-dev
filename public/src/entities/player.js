@@ -136,7 +136,7 @@ export function setControlsTopDown(k, player) {
   });
 
   //debug
-  k.onKeyPress("p", async () => {
+  k.onKeyPress("p", () => {
     let state = playerState.get();
     debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
 
