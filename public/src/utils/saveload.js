@@ -18,7 +18,7 @@ export async function loadPlayerData(playerId) {
   playerState.load(data);
   console.log("Loading player data:", data);
 
-  return `Load status: ${response.statusText}`;
+  return `Load game successful. Player ID: ${data.id}`;
 }
 
 export async function savePlayerData() {
@@ -43,7 +43,7 @@ export async function savePlayerData() {
     }
   }
 
-  return `Save status: ${response.statusText}`;
+  return `Save game successful. Player ID: ${playerData.id}`;
 }
 
 export async function createPlayerData() {

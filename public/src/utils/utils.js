@@ -78,12 +78,28 @@ export function generateLink(map, text, url, position) {
   });
 }
 
-export async function blinkEffect(k, entity) {
+export function debugLog(verbosity, message) {
+  switch (verbosity) {
+    case "warn":
+      console.warn(message);
+      k.debug.log(message);
+      break;
+    case "error":
+      console.error(message);
+      k.debug.error(message);
+      break;
+    default:
+      console.log(message);
+      k.debug.log(message);
+  }
+}
+
+export async function blinkEffect(entity) {
   await k.tween(entity.opacity, 0, 0.1, (val) => (entity.opacity = val), k.easings.linear);
   await k.tween(entity.opacity, 1, 0.1, (val) => (entity.opacity = val), k.easings.linear);
 }
 
-export function onAttacked(k, entity) {
+export function onAttacked(entity) {
   entity.onCollide("swordHitBox", async () => {
     if (entity.isAttacking) return;
 

@@ -1,5 +1,5 @@
 import { gameState, playerState } from "../states/stateManager.js";
-import { areAnyOfTheseKeysDown, playAnimIfNotPlaying } from "../utils/utils.js";
+import { areAnyOfTheseKeysDown, playAnimIfNotPlaying, debugLog } from "../utils/utils.js";
 import { savePlayerData } from "../utils/saveload.js";
 
 export function playerTopDown(k) {
@@ -76,7 +76,7 @@ export function setControlsTopDown(k, player) {
   k.onKeyPress("!", async () => {
     playerState.set("position", { x: player.worldPos().x, y: player.worldPos().y });
     const save = await savePlayerData();
-    if (save) console.log(save);
+    if (save) debugLog("log", save);
   });
 
   //jump
@@ -137,10 +137,9 @@ export function setControlsTopDown(k, player) {
 
   //debug
   k.onKeyPress("p", async () => {
-    let playerData = playerState.get();
+    let state = playerState.get();
+    debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
 
-    console.log("playerState:", playerData);
-    k.debug.log("playerState:", JSON.stringify(playerData));
     k.setCamPos(player.worldPos());
   });
 }

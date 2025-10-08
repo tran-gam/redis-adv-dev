@@ -1,6 +1,6 @@
 // import mainMenuText from "../content/mainMenuText.js";
 
-import { setBackgroundColor } from "../utils/utils.js";
+import { debugLog, setBackgroundColor } from "../utils/utils.js";
 import { loadPlayerData } from "../utils/saveload.js";
 import { playerState, gameState } from "../states/stateManager.js";
 
@@ -52,8 +52,7 @@ export default function mainMenu(k) {
 
     const playerId = parseInt(input.text);
     if (isNaN(playerId)) {
-      console.error("Invalid Player ID. Please enter a numeric ID.");
-      k.debug.error("Invalid Player ID. Please enter a numeric ID.");
+      debugLog("error", "Invalid Player ID. Please enter a numeric ID.");
       input.hasFocus = true;
       return;
     }
@@ -62,11 +61,10 @@ export default function mainMenu(k) {
     const load = await loadPlayerData(playerId);
 
     if (load) {
-      console.log(load);
+      debugLog("log", load);
       k.go("overworld");
     } else {
-      console.error("Unable to load game");
-      k.debug.log("Unable to load game");
+      debugLog("error", "Unable to load game");
       input.text = "Type Player ID";
       // input.textInput = "";
       input.hasFocus = true;
