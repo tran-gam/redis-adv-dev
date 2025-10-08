@@ -1,16 +1,16 @@
 import { setBackgroundColor, clamp, generateCollision } from "../utils/utils.js";
-import { fetchMapData } from "../utils/saveload.js";
+import { fetchData } from "../utils/saveload.js";
 import { playerSideScrolling, setControlsSideScrolling } from "../entities/player.js";
 import { playerState, gameState } from "../states/stateManager.js";
 
 export default async function cave(k) {
   setBackgroundColor("#313131");
 
-  const collisionData = await fetchMapData("./assets/data/caveCollision.json");
+  const caveCollision = await fetchData("./assets/data/caveCollision.json");
 
   //render base map layer and collisions
   const map = k.add([k.sprite("cave"), k.pos(0, 0), k.scale(2)]);
-  generateCollision(map, collisionData, k.vec2(0, -32), 1);
+  generateCollision(map, caveCollision, k.vec2(0, -32), 1);
 
   //add interactions
 

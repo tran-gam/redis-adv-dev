@@ -2,8 +2,9 @@ export default function playerStateSingleton() {
   let instance = null;
 
   function createInstance() {
-    const state = {
-      isSwordEquipped: false,
+    var state = {
+      id: 6379,
+      name: "Redis",
       maxHealth: 3,
       health: 3,
       position: { x: 1600, y: 200 },
@@ -18,6 +19,10 @@ export default function playerStateSingleton() {
 
       set(property, value) {
         state[property] = value;
+      },
+
+      load(data) {
+        state = data;
       },
     };
   }

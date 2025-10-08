@@ -5,7 +5,10 @@ export default function gameStateSingleton() {
     const state = {
       previousScene: null,
       overworldFire: false,
-      lairOfLatencyDefeated: false,
+      chapterOneCompleted: false,
+      chapterTwoCompleted: false,
+      chapterThreeCompleted: false,
+      chapterFourCompleted: false,
     };
 
     return {
