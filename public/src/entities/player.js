@@ -293,16 +293,9 @@ export function setControlsSideScrolling(k, player) {
 
   //debug
   k.onKeyPress("p", () => {
-    console.log("Player pos: " + player.worldPos());
-    k.debug.log("Player pos: " + player.worldPos());
+    let state = playerState.get();
+    debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
+
     k.setCamPos(player.worldPos());
   });
 }
-
-// function debug(k, player) {
-//   return [
-//     // console.log("Player pos: " + player.worldPos());
-//     k.debug.log("Player pos: " + player.worldPos()),
-//     k.setCamPos(player.worldPos()),
-//   ];
-// }
