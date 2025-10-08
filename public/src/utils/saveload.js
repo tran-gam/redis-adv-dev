@@ -1,72 +1,70 @@
 import { playerState, gameState } from "../states/stateManager.js";
 
 export async function loadPlayerData(playerId) {
-  const data = await fetchPlayerData(playerId);
-
-  if (data.documents.length === 0) {
-    console.log("No save file found.");
-    return null;
-  }
-  //load player data into player state
-  playerState.set("position", { x: data.documents[0].value.x, y: data.documents[0].value.y });
-  console.log("Player data loaded:", data.documents[0].value.x + ", " + data.documents[0].value.y);
-}
-
-export async function fetchPlayerData(playerId) {
   // fetch player data from backend API
   // "http://localhost:3000" can be removed from fetch URL because it's the same origin
-  const response = await fetch(`http://localhost:3000/api/?id=${playerId}`);
+  const response = await fetch(`http://localhost:3000/api/${playerId}`);
+
   if (!response.ok) {
-    throw new Error(`Error fetching player data: ${response.statusText}`);
+    if (response.status === 404) {
+      console.warn("No player data found.");
+      return null;
+    } else {
+      throw new Error(`Error loading player data: ${response.statusText}`);
+    }
   }
-  return await response.json();
+
+  const data = await response.json();
+  playerState.load(data);
+  console.log("Loading player data:", data);
+
+  return `Load status: ${response.statusText}`;
 }
 
-export async function savePlayerData(playerId, pos) {
+export async function savePlayerData() {
+  const playerData = playerState.get();
+  console.log("Saving player data:", playerData);
+
   let response = await fetch(`http://localhost:3000/api/`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      id: playerId,
-      x: Math.round(pos.x),
-      y: Math.round(pos.y),
-    }),
+    body: JSON.stringify({ playerData }),
   });
 
   if (!response.ok) {
     // If player not found, create new player data
     if (response.status === 404) {
       console.log("No save file found, creating new save.");
-      return await createPlayerData(playerId, "tran", pos);
+      return await createPlayerData();
     } else {
       throw new Error(`Error saving player data: ${response.statusText}`);
     }
   }
-  return await response.json();
+
+  return `Save status: ${response.statusText}`;
 }
 
-export async function createPlayerData(playerId, playerName, pos) {
+export async function createPlayerData() {
+  const playerData = playerState.get();
+  console.log("Creating player data:", playerData);
+
   const response = await fetch(`http://localhost:3000/api/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      id: playerId,
-      name: playerName || "Hero",
-      x: Math.round(pos.x),
-      y: Math.round(pos.y),
-    }),
+    body: JSON.stringify({ playerData }),
   });
 
   if (!response.ok) {
-    throw new Error(`Error saving player data: ${response.statusText}`);
+    throw new Error(`Error creating player data: ${response.statusText}`);
   }
-  return await response.json();
+
+  return `Create status: ${response.statusText}`;
 }
 
-export async function fetchMapData(mapPath) {
-  return await (await fetch(mapPath)).json();
+export async function fetchData(path) {
+  return await (await fetch(path)).json();
 }

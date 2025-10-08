@@ -1,13 +1,13 @@
 import { setBackgroundColor, generateCollision, generateLink } from "../utils/utils.js";
-import { fetchMapData } from "../utils/saveload.js";
+import { fetchData } from "../utils/saveload.js";
 import { playerTopDown, setControlsTopDown } from "../entities/player.js";
 import { playerState, gameState } from "../states/stateManager.js";
 
 export default async function overworld(k) {
   setBackgroundColor("#47ABA9");
 
-  //TODO: loading screen
-  const collisionData = await fetchMapData("./assets/data/protoIsland.json");
+  //fetch map data
+  const collisionData = await fetchData("./assets/data/protoIsland.json");
 
   //render base map layer and collisions
   const map = k.add([k.sprite("protoIsland"), k.pos(0)]);
@@ -25,7 +25,7 @@ export default async function overworld(k) {
   //add interaction to all objects with same tag (e.g. castle)
   k.on("onInteract", "castle", () => {
     console.log("Interacted with castle");
-    k.go("castle");
+    // k.go("castle");
   });
 
   const entities = {

@@ -70,18 +70,18 @@ router.get(
 router.post(
   "/",
   handler(async (req) => {
-    const { id, name, x, y } = req.body;
+    const { playerData } = req.body;
 
-    return create(id, name, x, y);
+    return create(playerData);
   })
 );
 
 router.patch(
   "/",
   handler(async (req) => {
-    const { id, x, y } = req.body;
+    const { playerData } = req.body;
 
-    return update(id, x, y);
+    return update(playerData);
   })
 );
 

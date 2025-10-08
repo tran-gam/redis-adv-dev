@@ -8,7 +8,7 @@ export function playerTopDown(k) {
     k.sprite("player", {
       anim: "idle-down",
     }),
-    k.area({ shape: new k.Rect(k.vec2(0, 20), 55, 40) }),
+    k.area({ shape: new k.Rect(k.vec2(0, 20), 50, 35) }),
     k.body(),
     k.pos(playerState.get().position.x, playerState.get().position.y),
     k.opacity(),
@@ -73,10 +73,10 @@ export function setControlsTopDown(k, player) {
   });
 
   //save
-  k.onKeyPress("!", () => {
-    //sessionId, data obj
-    let result = savePlayerData("12345", player.worldPos());
-    console.log("Player data saved:", result);
+  k.onKeyPress("!", async () => {
+    playerState.set("position", { x: player.worldPos().x, y: player.worldPos().y });
+    const save = await savePlayerData();
+    if (save) console.log(save);
   });
 
   //jump
@@ -97,11 +97,26 @@ export function setControlsTopDown(k, player) {
   k.onKeyPress("x", () => {
     if (player.isFrozen || player.isAttacking) return;
     player.isAttacking = true;
-    player.add([
-      k.pos(),
-      k.area({ shape: new k.Rect(k.vec2(player.flipX ? -70 : 30, 0), 40, 10) }),
-      "swordHitbox",
-    ]);
+
+    switch (player.direction) {
+      case "up":
+        player.add([
+          k.pos(),
+          k.area({ shape: new k.Rect(k.vec2(-5, -70), 10, 40) }),
+          "swordHitbox",
+        ]);
+        break;
+      case "down":
+        player.add([k.pos(), k.area({ shape: new k.Rect(k.vec2(-5, 45), 10, 30) }), "swordHitbox"]);
+        break;
+      default:
+        player.add([
+          k.pos(),
+          k.area({ shape: new k.Rect(k.vec2(player.flipX ? -70 : 30, 0), 40, 10) }),
+          "swordHitbox",
+        ]);
+        break;
+    }
 
     player.play(`attack${player.attackCombo}-${player.direction}`);
     // playAnimIfNotPlaying(player, `attack${player.attackCombo}-${player.direction}`);
@@ -118,6 +133,15 @@ export function setControlsTopDown(k, player) {
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
     }
+  });
+
+  //debug
+  k.onKeyPress("p", async () => {
+    let playerData = playerState.get();
+
+    console.log("playerState:", playerData);
+    k.debug.log("playerState:", JSON.stringify(playerData));
+    k.setCamPos(player.worldPos());
   });
 }
 
@@ -157,6 +181,7 @@ export function setControlsSideScrolling(k, player) {
   //movement
   k.onKeyDown((key) => {
     if (player.isFrozen || player.isAttacking) return;
+
     if (["left"].includes(key)) {
       player.flipX = true;
       player.move(-player.speed, 0);
@@ -166,8 +191,13 @@ export function setControlsSideScrolling(k, player) {
         playAnimIfNotPlaying(player, "jump");
         return;
       }
-      if (player.isFalling()) playAnimIfNotPlaying(player, "fall");
-      else playAnimIfNotPlaying(player, "run-side");
+
+      if (player.isFalling()) {
+        playAnimIfNotPlaying(player, "fall");
+        return;
+      }
+
+      playAnimIfNotPlaying(player, "run-side");
       return;
     }
 
@@ -180,8 +210,13 @@ export function setControlsSideScrolling(k, player) {
         playAnimIfNotPlaying(player, "jump");
         return;
       }
-      if (player.isFalling()) playAnimIfNotPlaying(player, "fall");
-      else playAnimIfNotPlaying(player, "run-side");
+
+      if (player.isFalling()) {
+        playAnimIfNotPlaying(player, "fall");
+        return;
+      }
+
+      playAnimIfNotPlaying(player, "run-side");
       return;
     }
   });
@@ -260,6 +295,15 @@ export function setControlsSideScrolling(k, player) {
   //debug
   k.onKeyPress("p", () => {
     console.log("Player pos: " + player.worldPos());
+    k.debug.log("Player pos: " + player.worldPos());
     k.setCamPos(player.worldPos());
   });
 }
+
+// function debug(k, player) {
+//   return [
+//     // console.log("Player pos: " + player.worldPos());
+//     k.debug.log("Player pos: " + player.worldPos()),
+//     k.setCamPos(player.worldPos()),
+//   ];
+// }

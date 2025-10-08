@@ -2,6 +2,7 @@
 
 import { setBackgroundColor } from "../utils/utils.js";
 import { loadPlayerData } from "../utils/saveload.js";
+import { playerState, gameState } from "../states/stateManager.js";
 
 export default function mainMenu(k) {
   setBackgroundColor("#000000");
@@ -14,7 +15,16 @@ export default function mainMenu(k) {
   ]);
 
   k.add([
-    k.text("Press F to load game", { size: 24, font: "gameboy" }),
+    k.text("Type Player ID", { size: 24, font: "gameboy" }),
+    k.textInput(),
+    k.area(),
+    k.anchor("center"),
+    k.pos(k.center().x, k.center().y - 20),
+    "inputId",
+  ]);
+
+  k.add([
+    k.text("Press Shift+1 to load game", { size: 24, font: "gameboy" }),
     k.area(),
     k.anchor("center"),
     k.pos(k.center().x, k.center().y + 100),
@@ -27,28 +37,41 @@ export default function mainMenu(k) {
     k.pos(k.center().x, k.center().y + 150),
   ]);
 
-  k.onKeyPress("f", async () => {
-    // gameState.loadFromRedis();
-    await loadPlayerData("12345");
+  k.add([
+    k.text("2025 Redis Labs", { size: 16, font: "gameboy" }),
+    k.area(),
+    k.anchor("center"),
+    k.pos(k.center().x, k.height() - 50),
+  ]);
 
-    k.go("overworld");
+  k.onKeyPress("!", async () => {
+    //get player id from text input
+    const input = k.get("inputId")[0];
+
+    input.hasFocus = false;
+
+    const playerId = parseInt(input.text);
+    if (isNaN(playerId)) {
+      console.error("Invalid Player ID. Please enter a numeric ID.");
+      k.debug.error("Invalid Player ID. Please enter a numeric ID.");
+      input.hasFocus = true;
+      return;
+    }
+
+    // load player data from Redis
+    const load = await loadPlayerData(playerId);
+
+    if (load) {
+      console.log(load);
+      k.go("overworld");
+    } else {
+      console.error("Unable to load game");
+      k.debug.log("Unable to load game");
+      input.text = "Type Player ID";
+      // input.textInput = "";
+      input.hasFocus = true;
+    }
   });
-
-  //load map data before going to overworld scene
-  // let mapData;
-  // k.scene("loading", async () => {
-  //   k.add([k.rect(k.width(), k.height()), k.color(0, 0, 0)]);
-  //   k.add([
-  //     k.text("Loading...", { size: 32, font: "gameboy" }),
-  //     k.pos(k.center().x, k.center().y),
-  //     k.anchor("center"),
-  //   ]);
-
-  //   const mapResponse = await fetch("assets/data/protoIsland.json");
-  //   mapData = await mapResponse.json();
-
-  //   k.go("oveworld", { mapData });
-  // });
 
   k.onKeyPress("enter", () => {
     k.go("overworld");

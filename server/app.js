@@ -3,36 +3,36 @@ import { SchemaFieldTypes } from "redis";
 
 /**
  * An error object
- * @typedef {Object} GameError
+ * @typedef {Object} PlayerError
  * @property {number} status
  * @property {string} message
  *
- * A Game status
- * @typedef {"Game" | "in progress" | "complete"} GameStatus
+ * A Player status
+ * @typedef {"Player" | "in progress" | "complete"} PlayerStatus
  *
- * A Game object
- * @typedef {Object} Game
+ * A Player object
+ * @typedef {Object} Player
  * @property {string} name
- * @property {GameStatus} status
+ * @property {PlayerStatus} status
  * @property {string} created_date
  * @property {string} updated_date
  *
- * A Game document
- * @typedef {Object} GameDocument
+ * A Player document
+ * @typedef {Object} PlayerDocument
  * @property {string} id
- * @property {Game} value
+ * @property {Player} value
  *
- * A Game object
- * @typedef {Object} Games
+ * A Player object
+ * @typedef {Object} Players
  * @property {number} total
- * @property {GameDocument[]} documents
+ * @property {PlayerDocument[]} documents
  */
 
-const GAME_INDEX = "game-idx";
-const GAME_PREFIX = "game:";
+const PLAYER_INDEX = "player-idx";
+const PLAYER_PREFIX = "players:";
 
 /**
- * Checks if the GAME_INDEX already exists in Redis
+ * Checks if the PLAYER_INDEX already exists in Redis
  *
  * @returns {Promise<boolean>}
  */
@@ -41,12 +41,12 @@ async function haveIndex() {
   const indexes = await redis.ft._list();
 
   return indexes.some((index) => {
-    return index === GAME_INDEX;
+    return index === PLAYER_INDEX;
   });
 }
 
 /**
- * Creates the GAME_INDEX if it doesn't exist already
+ * Creates the PLAYER_INDEX if it doesn't exist already
  *
  * @returns {Promise<void>}
  */
@@ -55,7 +55,7 @@ export async function createIndexIfNotExists() {
 
   if (!(await haveIndex())) {
     await redis.ft.create(
-      GAME_INDEX,
+      PLAYER_INDEX,
       {
         "$.name": {
           AS: "name",
@@ -68,14 +68,14 @@ export async function createIndexIfNotExists() {
       },
       {
         ON: "JSON",
-        PREFIX: GAME_PREFIX,
+        PREFIX: PLAYER_PREFIX,
       }
     );
   }
 }
 
 /**
- * Drops the GAME_INDEX if it exists
+ * Drops the PLAYER_INDEX if it exists
  *
  * @returns {Promise<void>}
  */
@@ -83,12 +83,12 @@ export async function dropIndex() {
   const redis = await getClient();
 
   if (await haveIndex()) {
-    await redis.ft.dropIndex(GAME_INDEX);
+    await redis.ft.dropIndex(PLAYER_INDEX);
   }
 }
 
 /**
- * Initializes Game index if necessary
+ * Initializes Player index if necessary
  *
  * @returns {Promise<void>}
  */
@@ -96,53 +96,53 @@ export async function initialize() {
   await createIndexIfNotExists();
 }
 
-const Game_REGEXP = new RegExp(`^${GAME_PREFIX}`);
+const Player_REGEXP = new RegExp(`^${PLAYER_PREFIX}`);
 
 /**
- * Allow for id with or without GAME_PREFIX
+ * Allow for id with or without PLAYER_PREFIX
  *
  * @param {string} id
  * @returns {string}
  */
 function formatId(id) {
-  return Game_REGEXP.test(id) ? id : `${GAME_PREFIX}${id}`;
+  return Player_REGEXP.test(id) ? id : `${PLAYER_PREFIX}${id}`;
 }
 
 /**
  * Gets all game
  *
- * @returns {Promise<Games>}
+ * @returns {Promise<Players>}
  */
 export async function all() {
   const redis = await getClient();
 
-  return /** @type {Promise<Games>} */ (redis.ft.search(GAME_INDEX, "*"));
+  return /** @type {Promise<Players>} */ (redis.ft.search(PLAYER_INDEX, "*"));
 }
 
 /**
- * Gets a Game by id
+ * Gets a Player by id
  *
  * @param {string} id
- * @returns {Promise<Game | GameError | null>}
+ * @returns {Promise<Player | PlayerError | null>}
  */
 export async function one(id) {
   const redis = await getClient();
 
-  const Game = await redis.json.get(formatId(id));
+  const Player = await redis.json.get(formatId(id));
 
-  if (!Game) {
+  if (!Player) {
     return { status: 404, message: "Not Found" };
   }
 
-  return /** @type {Game} */ (Game);
+  return /** @type {Player} */ (Player);
 }
 
 /**
- * Searches for game by name and/or status
+ * Searches for player by name and/or status
  *
  * @param {string} [name]
  * @param {string} [status]
- * @returns {Promise<Games>}
+ * @returns {Promise<Players>}
  */
 export async function search(name, status) {
   const redis = await getClient();
@@ -156,82 +156,49 @@ export async function search(name, status) {
     searches.push(`@status:"${status}"`);
   }
 
-  return /** @type {Promise<Games>} */ (
-    redis.ft.search(GAME_INDEX, searches.join(" "))
-  );
+  return /** @type {Promise<Players>} */ (redis.ft.search(PLAYER_INDEX, searches.join(" ")));
 }
 
 /**
- * Creates a Game
+ * Creates a Player
  *
- * @param {string} [id]
- * @param {string} [name]
- * @returns {Promise<GameDocument | GameError>}
  */
-export async function create(id, name, x, y) {
+export async function create(playerData) {
   const redis = await getClient();
-  const date = new Date();
 
-  if (!name) {
-    return { status: 400, message: "Game must have a name" };
-  }
-
-  /**
-   * @type {GameDocument}
-   */
-  const Game = {
-    id: formatId(id),
-    value: {
-      name,
-      x,
-      y,
-      created_date: date.toISOString(),
-      updated_date: date.toISOString(),
-    },
-  };
-
-  const result = await redis.json.set(Game.id, "$", Game.value);
+  const result = await redis.json.set(formatId(playerData.id), "$", playerData);
 
   if (result?.toUpperCase() === "OK") {
-    return Game;
+    return playerData;
   } else {
-    return { status: 400, message: "Game is invalid" };
+    return { status: 400, message: "Player is invalid" };
   }
 }
 
 /**
- * Updates a Game
+ * Updates a Player
  *
- * @param {string} id
- * @param {GameStatus} status
- * @returns {Promise<Game | GameError>}
  */
-export async function update(id, x, y) {
+export async function update(playerData) {
   const redis = await getClient();
-  const date = new Date();
 
-  const GameOrError = await one(id);
+  const PlayerOrError = await one(playerData.id);
 
-  if (!GameOrError || isFinite(/** @type {number} */ (GameOrError.status))) {
+  if (!PlayerOrError || isFinite(/** @type {number} */ (PlayerOrError.status))) {
     return { status: 404, message: "Not Found" };
   }
 
-  const Game = /** @type {Game} */ (GameOrError);
-  Game.x = x;
-  Game.y = y;
-  Game.updated_date = date.toISOString();
-
-  const result = await redis.json.set(formatId(id), "$", Game);
+  const result = await redis.json.set(formatId(playerData.id), "$", playerData);
 
   if (result?.toUpperCase() === "OK") {
-    return Game;
+    return playerData;
   } else {
-    return { status: 400, message: "Game is invalid" };
+    return { status: 400, message: "Player is invalid" };
   }
 }
 
 /**
- * Deletes a Game
+ * Deletes a Player
  *
  * @param {string} id
  */
@@ -251,6 +218,6 @@ export async function delAll() {
   const game = await all();
 
   if (game.total > 0) {
-    await redis.del(game.documents.map((Game) => Game.id));
+    await redis.del(game.documents.map((Player) => Player.id));
   }
 }
