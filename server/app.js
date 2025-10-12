@@ -144,20 +144,20 @@ export async function one(id) {
  * @param {string} [status]
  * @returns {Promise<Players>}
  */
-export async function search(name, status) {
-  const redis = await getClient();
-  const searches = [];
+// export async function search(name, status) {
+//   const redis = await getClient();
+//   const searches = [];
 
-  if (name) {
-    searches.push(`@name:(${name})`);
-  }
+//   if (name) {
+//     searches.push(`@name:(${name})`);
+//   }
 
-  if (status) {
-    searches.push(`@status:"${status}"`);
-  }
+//   if (status) {
+//     searches.push(`@status:"${status}"`);
+//   }
 
-  return /** @type {Promise<Players>} */ (redis.ft.search(PLAYER_INDEX, searches.join(" ")));
-}
+//   return /** @type {Promise<Players>} */ (redis.ft.search(PLAYER_INDEX, searches.join(" ")));
+// }
 
 /**
  * Creates a Player
@@ -169,7 +169,7 @@ export async function create(playerData) {
   const result = await redis.json.set(formatId(playerData.id), "$", playerData);
 
   if (result?.toUpperCase() === "OK") {
-    return playerData;
+    return { status: 200, message: "Player created" };
   } else {
     return { status: 400, message: "Player is invalid" };
   }
@@ -191,7 +191,7 @@ export async function update(playerData) {
   const result = await redis.json.set(formatId(playerData.id), "$", playerData);
 
   if (result?.toUpperCase() === "OK") {
-    return playerData;
+    return { status: 200, message: "Player updated" };
   } else {
     return { status: 400, message: "Player is invalid" };
   }

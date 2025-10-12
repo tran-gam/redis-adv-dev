@@ -1,47 +1,40 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "format":"js"
-        }
-    },
  "height":20,
  "infinite":false,
  "layers":[
         {
          "draworder":"topdown",
          "id":9,
-         "name":"collision",
+         "name":"collisions",
          "objects":[
                 {
-                 "height":64,
+                 "height":32,
                  "id":2,
-                 "name":"",
+                 "name":"boundary",
                  "rotation":0,
-                 "type":"",
+                 "type":"collision",
                  "visible":true,
                  "width":1472,
                  "x":256,
-                 "y":64
+                 "y":96
                 }, 
                 {
                  "height":768,
                  "id":4,
-                 "name":"",
+                 "name":"boundary",
                  "rotation":0,
-                 "type":"",
+                 "type":"collision",
                  "visible":true,
                  "width":64,
                  "x":192,
                  "y":128
                 }, 
                 {
-                 "height":763,
+                 "height":830,
                  "id":5,
                  "name":"",
                  "rotation":0,
-                 "type":"",
+                 "type":"collision",
                  "visible":true,
                  "width":6,
                  "x":1728,
@@ -50,9 +43,9 @@
                 {
                  "height":62,
                  "id":6,
-                 "name":"",
+                 "name":"boundary",
                  "rotation":0,
-                 "type":"",
+                 "type":"collision",
                  "visible":true,
                  "width":640,
                  "x":256,
@@ -61,11 +54,11 @@
                 {
                  "height":61,
                  "id":7,
-                 "name":"",
+                 "name":"boundary",
                  "rotation":0,
-                 "type":"",
+                 "type":"collision",
                  "visible":true,
-                 "width":704,
+                 "width":702,
                  "x":1024,
                  "y":899
                 }, 
@@ -94,68 +87,167 @@
                 {
                  "height":54,
                  "id":10,
-                 "name":"",
+                 "name":"tree",
                  "rotation":0,
-                 "type":"",
+                 "type":"foliage",
                  "visible":true,
-                 "width":321,
+                 "width":323,
                  "x":607,
                  "y":192
                 }, 
                 {
-                 "height":64,
+                 "height":60,
                  "id":11,
-                 "name":"",
+                 "name":"tree",
                  "rotation":0,
-                 "type":"",
+                 "type":"foliage",
                  "visible":true,
                  "width":212,
                  "x":662,
                  "y":832
                 }, 
                 {
-                 "height":64,
+                 "height":60,
                  "id":12,
-                 "name":"",
+                 "name":"tree",
                  "rotation":0,
-                 "type":"",
+                 "type":"foliage",
                  "visible":true,
                  "width":338,
                  "x":1047,
                  "y":832
                 }, 
                 {
-                 "height":112,
-                 "id":13,
-                 "name":"castle",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":243,
-                 "x":322,
-                 "y":131
-                }, 
-                {
                  "height":64,
                  "id":14,
-                 "name":"",
+                 "name":"tree",
                  "rotation":0,
-                 "type":"",
+                 "type":"foliage",
                  "visible":true,
                  "width":208,
                  "x":1431,
                  "y":512
                 }, 
                 {
-                 "height":45,
+                 "height":40,
                  "id":18,
                  "name":"cave",
                  "rotation":0,
-                 "type":"entrance",
+                 "type":"",
                  "visible":true,
-                 "width":160,
-                 "x":1552,
+                 "width":63,
+                 "x":1601,
                  "y":131
+                }, 
+                {
+                 "height":0,
+                 "id":20,
+                 "name":"castle",
+                 "polygon":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":-111
+                        }, 
+                        {
+                         "x":243,
+                         "y":-111
+                        }, 
+                        {
+                         "x":243,
+                         "y":0
+                        }, 
+                        {
+                         "x":151.875,
+                         "y":0
+                        }, 
+                        {
+                         "x":151.875,
+                         "y":-55.5
+                        }, 
+                        {
+                         "x":91.125,
+                         "y":-55.5
+                        }, 
+                        {
+                         "x":91.125,
+                         "y":0
+                        }],
+                 "rotation":0,
+                 "type":"collision",
+                 "visible":true,
+                 "width":0,
+                 "x":327,
+                 "y":242
+                }, 
+                {
+                 "height":48,
+                 "id":21,
+                 "name":"castle-door",
+                 "rotation":0,
+                 "type":"interaction",
+                 "visible":true,
+                 "width":55,
+                 "x":421,
+                 "y":195
+                }, 
+                {
+                 "height":192,
+                 "id":22,
+                 "name":"boundary",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":160,
+                 "y":896
+                }, 
+                {
+                 "height":32,
+                 "id":23,
+                 "name":"boundary",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1600,
+                 "x":192,
+                 "y":1088
+                }, 
+                {
+                 "height":448,
+                 "id":24,
+                 "name":"boundary",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1792,
+                 "y":640
+                }, 
+                {
+                 "height":320,
+                 "id":25,
+                 "name":"boundary",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1856,
+                 "y":320
+                }, 
+                {
+                 "height":32,
+                 "id":26,
+                 "name":"boundary",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":117,
+                 "x":1739,
+                 "y":288
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -163,8 +255,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":13,
- "nextobjectid":19,
+ "nextlayerid":14,
+ "nextobjectid":27,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

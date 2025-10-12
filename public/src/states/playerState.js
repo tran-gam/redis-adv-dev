@@ -2,7 +2,7 @@ export default function playerStateSingleton() {
   let instance = null;
 
   function createInstance() {
-    var state = {
+    let state = {
       id: 6379,
       name: "Redis",
       maxHealth: 3,

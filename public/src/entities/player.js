@@ -1,8 +1,9 @@
-import { gameState, playerState } from "../states/stateManager.js";
+import k from "../kaplayContext.js";
+import { playerState, gameState } from "../states/stateManager.js";
 import { areAnyOfTheseKeysDown, playAnimIfNotPlaying, debugLog } from "../utils/utils.js";
 import { savePlayerData } from "../utils/saveload.js";
 
-export function playerTopDown(k) {
+export function playerTopDown() {
   //generate player with top down components
   return [
     k.sprite("player", {
@@ -12,9 +13,10 @@ export function playerTopDown(k) {
     k.body(),
     k.pos(playerState.get().position.x, playerState.get().position.y),
     k.opacity(),
-    k.scale(0.75),
+    k.scale(0.65),
     k.anchor("center"),
     k.health(playerState.get().health),
+    "player",
     {
       speed: 200,
       attackPower: 1,
@@ -23,14 +25,55 @@ export function playerTopDown(k) {
       direction: "down",
       isAttacking: false,
       isFrozen: false,
+      setControls() {
+        setControlsTopDown(this);
+      },
     },
-    "player",
   ];
 }
 
-export function setControlsTopDown(k, player) {
+// side scrolling player setup\\
+//
+//
+export function playerSideScrolling() {
+  //generate player with side scrolling components
+  return [
+    k.sprite("player", { anim: "idle-side" }),
+    k.area({ shape: new k.Rect(k.vec2(0, 0), 45, 60) }),
+    k.anchor("center"),
+    k.body({ mass: 100, jumpForce: 550 }),
+    // k.body(),
+    k.pos(playerState.get().position.x, playerState.get().position.y),
+    k.opacity(),
+    k.timer(),
+    // k.scale(1),
+    k.doubleJump(2),
+    k.health(playerState.get().health),
+    "player",
+    {
+      speed: 200,
+      attackPower: 1,
+      attackCombo: 1,
+      attackComboMax: 2,
+      direction: "side",
+      isAttacking: false,
+      isFrozen: false,
+      setControls() {
+        setControlsSideScrolling(this);
+      },
+    },
+  ];
+}
+
+// top down controls \\
+//
+//
+export function setControlsTopDown(player) {
+  //Optimization: use GameObject local input handlers
+  //https://kaplayjs.com/docs/guides/optimization/
+
   //movement
-  k.onKeyDown((key) => {
+  player.onKeyDown((key) => {
     if (player.isFrozen || player.isAttacking) return;
 
     if (["up"].includes(key)) {
@@ -67,34 +110,29 @@ export function setControlsTopDown(k, player) {
   });
 
   //return to idle
-  k.onKeyRelease((key) => {
+  player.onKeyRelease((key) => {
     if (player.isFrozen || player.isAttacking) return;
     playAnimIfNotPlaying(player, `idle-${player.direction}`);
   });
 
   //save
-  k.onKeyPress("!", async () => {
+  player.onKeyPress("!", async () => {
     playerState.set("position", { x: player.worldPos().x, y: player.worldPos().y });
     const save = await savePlayerData();
     if (save) debugLog("log", save);
   });
 
-  //jump
-  // k.onKeyPress("space", () => {
-  //   if (player.isFrozen || player.isAttacking) return;
-
-  //   player.doubleJump();
-  // });
+  //jump disabled for top-down mode
 
   //interact
-  k.onKeyPress("z", () => {
+  player.onKeyPress("z", () => {
     if (player.getCollisions().length === 0) return;
     k.debug.log("Interacted with " + player.getCollisions()[0].target.tags[1]);
     player.getCollisions()[0].target.trigger("onInteract");
   });
 
   //attack
-  k.onKeyPress("x", () => {
+  player.onKeyPress("x", () => {
     if (player.isFrozen || player.isAttacking) return;
     player.isAttacking = true;
 
@@ -128,7 +166,7 @@ export function setControlsTopDown(k, player) {
   //on animation end
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
-      console.log("Attack animation ended");
+      // console.log("Attack animation ended");
       if (player.get("swordHitbox")[0]) k.destroy(player.get("swordHitbox")[0]);
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
@@ -136,7 +174,7 @@ export function setControlsTopDown(k, player) {
   });
 
   //debug
-  k.onKeyPress("p", () => {
+  player.onKeyPress("p", () => {
     let state = playerState.get();
     debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
 
@@ -144,41 +182,15 @@ export function setControlsTopDown(k, player) {
   });
 }
 
-// side scrolling player setup\\
+// side scrolling controls \\
 //
 //
+export function setControlsSideScrolling(player) {
+  //Optimization: use GameObject local input handlers
+  //https://kaplayjs.com/docs/guides/optimization/
 
-export function playerSideScrolling(k) {
-  //generate player with side scrolling components
-  return [
-    k.sprite("player", {
-      anim: "idle-side",
-    }),
-    k.area({ shape: new k.Rect(k.vec2(0, 0), 45, 60) }),
-    k.body({ mass: 100, jumpForce: 600 }),
-    // k.body(),
-    k.pos(playerState.get().position.x, playerState.get().position.y),
-    k.opacity(),
-    k.scale(1),
-    k.doubleJump(2),
-    k.anchor("center"),
-    k.health(playerState.get().health),
-    {
-      speed: 200,
-      attackPower: 1,
-      attackCombo: 1,
-      attackComboMax: 2,
-      direction: "side",
-      isAttacking: false,
-      isFrozen: false,
-    },
-    "player",
-  ];
-}
-
-export function setControlsSideScrolling(k, player) {
   //movement
-  k.onKeyDown((key) => {
+  player.onKeyDown((key) => {
     if (player.isFrozen || player.isAttacking) return;
 
     if (["left"].includes(key)) {
@@ -221,44 +233,46 @@ export function setControlsSideScrolling(k, player) {
   });
 
   //return to idle
-  k.onKeyRelease((key) => {
+  player.onKeyRelease((key) => {
     if (player.isFrozen || player.isAttacking || player.isJumping()) return;
     if (key === "left" || key === "right") playAnimIfNotPlaying(player, `idle-${player.direction}`);
   });
+
   player.onGround(() => playAnimIfNotPlaying(player, `idle-${player.direction}`));
 
-  //save
-  // k.onKeyPress("!", () => {
-  //   //sessionId, data obj
-  //   let result = savePlayerData("12345", player.worldPos());
-  //   console.log("Player data saved:", result);
+  //save disabled for side-scrolling mode
+  // player.onKeyPress("!", async () => {
+  //   playerState.set("position", { x: player.worldPos().x, y: player.worldPos().y });
+  //   const save = await savePlayerData();
+  //   if (save) debugLog("log", save);
   // });
 
   //jump
-  k.onKeyPress("space", () => {
+  player.onKeyPress("space", () => {
     if (player.isFrozen || player.isAttacking) return;
     playAnimIfNotPlaying(player, "jump");
     player.doubleJump();
   });
 
   //interact
-  k.onKeyPress("z", () => {
-    if (player.isFrozen || player.isAttacking) return;
-    if (player.getCollisions().length === 0) return;
-    k.debug.log("Interacted with " + player.getCollisions()[0].target.tags[1]);
-    player.getCollisions()[0].target.trigger("onInteract");
-  });
+  // player.onKeyPress("z", () => {
+  //   if (player.isFrozen || player.isAttacking) return;
+  //   if (player.getCollisions().length <= 1) return;
+  //   k.debug.log("Interacted with " + player.getCollisions()[0].target.tags[1]);
+  //   player.getCollisions()[0].target.trigger("onInteract");
+  // });
 
   //attack
-  k.onKeyPress("x", () => {
+  player.onKeyPress("x", () => {
     if (player.isFrozen || player.isAttacking) return;
     player.isAttacking = true;
     player.add([
       k.pos(),
-      k.area({ shape: new k.Rect(k.vec2(player.flipX ? -70 : 30, 0), 40, 10) }),
-      "swordHitbox",
+      k.area({ shape: new k.Rect(k.vec2(player.flipX ? -65 : 25, 0), 60, 10) }),
+      "playerSword",
     ]);
 
+    //jump attack animation attempt
     // if (player.isJumping()) {
     //   console.log("initial pos: " + player.worldPos());
     //   player.applyImpulse(0, 300);
@@ -285,14 +299,14 @@ export function setControlsSideScrolling(k, player) {
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
       console.log("Attack animation ended");
-      if (player.get("swordHitbox")[0]) k.destroy(player.get("swordHitbox")[0]);
+      if (player.get("playerSword")[0]) k.destroy(player.get("playerSword")[0]);
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
     }
   });
 
   //debug
-  k.onKeyPress("p", () => {
+  player.onKeyPress("p", () => {
     let state = playerState.get();
     debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
 

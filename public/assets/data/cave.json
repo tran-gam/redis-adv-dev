@@ -4,8 +4,67 @@
  "layers":[
         {
          "draworder":"topdown",
+         "id":4,
+         "name":"entities",
+         "objects":[
+                {
+                 "height":0,
+                 "id":26,
+                 "name":"goblin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":147,
+                 "y":98
+                }, 
+                {
+                 "height":0,
+                 "id":27,
+                 "name":"goblin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":301,
+                 "y":304
+                }, 
+                {
+                 "height":0,
+                 "id":29,
+                 "name":"goblin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":611,
+                 "y":112
+                }, 
+                {
+                 "height":0,
+                 "id":30,
+                 "name":"goblin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":746,
+                 "y":362
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
-         "name":"collision",
+         "name":"collisions",
          "objects":[
                 {
                  "height":32,
@@ -16,7 +75,7 @@
                  "visible":true,
                  "width":320,
                  "x":96,
-                 "y":160
+                 "y":128
                 }, 
                 {
                  "height":32,
@@ -27,7 +86,7 @@
                  "visible":true,
                  "width":96,
                  "x":64,
-                 "y":192
+                 "y":160
                 }, 
                 {
                  "height":192,
@@ -38,7 +97,7 @@
                  "visible":true,
                  "width":16,
                  "x":48,
-                 "y":224
+                 "y":192
                 }, 
                 {
                  "height":16,
@@ -49,7 +108,7 @@
                  "visible":true,
                  "width":96,
                  "x":64,
-                 "y":416
+                 "y":384
                 }, 
                 {
                  "height":64,
@@ -60,7 +119,7 @@
                  "visible":true,
                  "width":192,
                  "x":160,
-                 "y":352
+                 "y":320
                 }, 
                 {
                  "height":32,
@@ -71,7 +130,7 @@
                  "visible":true,
                  "width":96,
                  "x":480,
-                 "y":192
+                 "y":160
                 }, 
                 {
                  "height":128,
@@ -82,7 +141,7 @@
                  "visible":true,
                  "width":64,
                  "x":512,
-                 "y":64
+                 "y":32
                 }, 
                 {
                  "height":32,
@@ -93,7 +152,7 @@
                  "visible":true,
                  "width":96,
                  "x":576,
-                 "y":160
+                 "y":128
                 }, 
                 {
                  "height":64,
@@ -104,7 +163,7 @@
                  "visible":true,
                  "width":192,
                  "x":448,
-                 "y":288
+                 "y":256
                 }, 
                 {
                  "height":64,
@@ -115,7 +174,7 @@
                  "visible":true,
                  "width":96,
                  "x":448,
-                 "y":352
+                 "y":320
                 }, 
                 {
                  "height":16,
@@ -126,7 +185,7 @@
                  "visible":true,
                  "width":96,
                  "x":352,
-                 "y":384
+                 "y":352
                 }, 
                 {
                  "height":16,
@@ -137,7 +196,7 @@
                  "visible":true,
                  "width":256,
                  "x":544,
-                 "y":416
+                 "y":384
                 }, 
                 {
                  "height":64,
@@ -148,7 +207,7 @@
                  "visible":true,
                  "width":96,
                  "x":736,
-                 "y":224
+                 "y":192
                 }, 
                 {
                  "height":32,
@@ -159,7 +218,7 @@
                  "visible":true,
                  "width":32,
                  "x":768,
-                 "y":288
+                 "y":256
                 },
             
                 {
@@ -171,7 +230,7 @@
                  "visible":true,
                  "width":16,
                  "x":800,
-                 "y":320
+                 "y":288
                 }, 
                 {
                  "height":128,
@@ -182,7 +241,7 @@
                  "visible":true,
                  "width":16,
                  "x":832,
-                 "y":96
+                 "y":64
                 }, 
                 {
                  "height":16,
@@ -193,7 +252,7 @@
                  "visible":true,
                  "width":256,
                  "x":576,
-                 "y":80
+                 "y":48
                 }, 
                 {
                  "height":96,
@@ -204,7 +263,7 @@
                  "visible":true,
                  "width":16,
                  "x":80,
-                 "y":64
+                 "y":32
                 }, 
                 {
                  "height":16,
@@ -215,7 +274,7 @@
                  "visible":true,
                  "width":416,
                  "x":96,
-                 "y":48
+                 "y":16
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -223,8 +282,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":26,
+ "nextlayerid":5,
+ "nextobjectid":31,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

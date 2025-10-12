@@ -4,7 +4,7 @@ const k = kaplay({
   width: 1280,
   height: 720,
   letterbox: true,
-  global: false,
+  global: false, //Optimization: avoid global namespace
   debug: true,
 });
 

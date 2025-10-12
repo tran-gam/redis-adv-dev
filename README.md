@@ -1,5 +1,10 @@
 # Updates
 
+## v0.03
+
+- Added debug utility function, logs messages to both the browser and Kaplay consoles
+- Implemented enemy spawn
+
 ## v0.02
 
 - Player data can now be stored in playerState singleton
@@ -10,6 +15,6 @@
 ## v0.01
 
 - Base game
-- Frontend: [KaPlayJS](https://kaplayjs.com/)
+- Frontend: [KaplayJS](https://kaplayjs.com/)
 - Backend: NodeJS with Redis for data persistence
   - Backend also serving static frontend
