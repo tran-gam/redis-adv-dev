@@ -138,20 +138,15 @@ export function setControlsTopDown(player) {
 
     switch (player.direction) {
       case "up":
-        player.add([
-          k.pos(),
-          k.area({ shape: new k.Rect(k.vec2(-5, -70), 10, 40) }),
-          "swordHitbox",
-        ]);
+        player.add([k.area({ shape: new k.Rect(k.vec2(-5, -70), 10, 40) }), "playerSword"]);
         break;
       case "down":
-        player.add([k.pos(), k.area({ shape: new k.Rect(k.vec2(-5, 45), 10, 30) }), "swordHitbox"]);
+        player.add([k.area({ shape: new k.Rect(k.vec2(-5, 45), 10, 30) }), "playerSword"]);
         break;
       default:
         player.add([
-          k.pos(),
           k.area({ shape: new k.Rect(k.vec2(player.flipX ? -70 : 30, 0), 40, 10) }),
-          "swordHitbox",
+          "playerSword",
         ]);
         break;
     }
@@ -167,7 +162,7 @@ export function setControlsTopDown(player) {
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
       // console.log("Attack animation ended");
-      if (player.get("swordHitbox")[0]) k.destroy(player.get("swordHitbox")[0]);
+      if (player.get("playerSword")[0]) k.destroy(player.get("playerSword")[0]);
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
     }
@@ -177,9 +172,24 @@ export function setControlsTopDown(player) {
   player.onKeyPress("p", () => {
     let state = playerState.get();
     debugLog("log", "playerState:\n" + JSON.stringify(state, null, 2));
+    console.log("player:", state);
 
     k.setCamPos(player.worldPos());
   });
+
+  //collision
+  //prevent sword collision with player
+  // player.onBeforePhysicsResolve((collision) => {
+  // if (collision.target.is("playerSword")) {
+  //   //ignore collision with sword
+  //   collision.resolve = false;
+  // }
+  // });
+
+  // player.onCollide((other, collision) => {
+  //   console.log("collided with:", other.tags[1]);
+  //   console.log(collision);
+  // });
 }
 
 // side scrolling controls \\
@@ -254,7 +264,7 @@ export function setControlsSideScrolling(player) {
     player.doubleJump();
   });
 
-  //interact
+  //interact disabled for side-scrolling mode
   // player.onKeyPress("z", () => {
   //   if (player.isFrozen || player.isAttacking) return;
   //   if (player.getCollisions().length <= 1) return;
@@ -262,15 +272,43 @@ export function setControlsSideScrolling(player) {
   //   player.getCollisions()[0].target.trigger("onInteract");
   // });
 
+  //>>>>>>>>>>>>><<<<<<<<<<<<<<\\
   //attack
   player.onKeyPress("x", () => {
     if (player.isFrozen || player.isAttacking) return;
     player.isAttacking = true;
-    player.add([
-      k.pos(),
-      k.area({ shape: new k.Rect(k.vec2(player.flipX ? -65 : 25, 0), 60, 10) }),
+    const sword = player.add([
+      k.area({
+        shape: new k.Rect(k.vec2(player.flipX ? -70 : 35, -10), 40, 10),
+        collisionIgnore: ["", "boundary", "platform"],
+      }),
+      // k.pos(),
+      // k.rotate(),
+      // k.timer(),
+      // k.animate(), //({ followMotion: true, relative: true }),
+      // k.anchor("left"),
       "playerSword",
+      {
+        atk: player.attackPower,
+        slash() {
+          //lerp move sword hitbox, more efficient than tween, requires k.animate()
+          // this.animate("pos", [k.vec2(0, 0), k.vec2(player.flipX ? -50 : 50, 50)], {
+          //   duration: 0.3,
+          // });
+
+          //rotate sword hitbox, requires k.rotate() & k.timer()
+          // this.tween(0, player.flipX ? -90 : 90, 0.3, (val) => (this.angle = val));
+
+          console.log("sword slash");
+          this.onCollide((other) => {
+            console.log("sword hit: ", other.tags[1]);
+            other.trigger("onAttacked", this.atk); //calculate and pass damage here
+            this.destroy();
+          });
+        },
+      },
     ]);
+    sword.slash();
 
     //jump attack animation attempt
     // if (player.isJumping()) {
@@ -298,7 +336,7 @@ export function setControlsSideScrolling(player) {
   //on animation end
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
-      console.log("Attack animation ended");
+      // console.log("Attack animation ended");
       if (player.get("playerSword")[0]) k.destroy(player.get("playerSword")[0]);
       player.isAttacking = false;
       playAnimIfNotPlaying(player, `idle-${player.direction}`);
@@ -312,4 +350,18 @@ export function setControlsSideScrolling(player) {
 
     k.setCamPos(player.worldPos());
   });
+
+  //collision
+  //prevent sword collision with player
+  // player.onBeforePhysicsResolve((collision) => {
+  // if (collision.target.is("playerSword")) {
+  //   //ignore collision with sword
+  //   collision.resolve = false;
+  // }
+  // });
+
+  // player.onCollide((other, collision) => {
+  //   console.log("collided with:", other.tags[1]);
+  //   console.log(collision);
+  // });
 }

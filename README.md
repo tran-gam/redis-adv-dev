@@ -4,6 +4,11 @@
 
 - Added debug utility function, logs messages to both the browser and Kaplay consoles
 - Implemented enemy spawn
+  - Working on collision handling
+- Optimization:
+  - Using Game Object local timers for enemy behaviors
+  - Using Game Object local input handler for player inputs
+  - Hide offscreen objects
 
 ## v0.02
 

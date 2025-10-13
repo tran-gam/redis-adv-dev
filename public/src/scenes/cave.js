@@ -25,6 +25,7 @@ export default async function cave(k) {
   //spawn enemies
   for (const ent of entities) {
     const entity = map.add(spawnDebugEntity(k, ent));
+    console.log("Spawned entity at: ", ent.x, ent.y);
     entity.setEvents();
     entity.setBehavior();
   }
