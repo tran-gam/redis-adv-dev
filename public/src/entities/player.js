@@ -289,7 +289,7 @@ export function setControlsSideScrolling(player) {
       // k.anchor("left"),
       "playerSword",
       {
-        atk: player.attackPower,
+        damage: player.attackPower, //assign or calculate damage
         slash() {
           //lerp move sword hitbox, more efficient than tween, requires k.animate()
           // this.animate("pos", [k.vec2(0, 0), k.vec2(player.flipX ? -50 : 50, 50)], {
@@ -302,7 +302,7 @@ export function setControlsSideScrolling(player) {
           console.log("sword slash");
           this.onCollide((other) => {
             console.log("sword hit: ", other.tags[1]);
-            other.trigger("onAttacked", this.atk); //calculate and pass damage here
+            other.trigger("onAttacked", this.damage); //pass damage here
             this.destroy();
           });
         },
