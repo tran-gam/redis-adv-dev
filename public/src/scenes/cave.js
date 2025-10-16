@@ -2,32 +2,34 @@ import { setBackgroundColor, generateCollision, clamp } from "../utils/utils.js"
 import { fetchData } from "../utils/saveload.js";
 import { playerState, gameState } from "../states/stateManager.js";
 import { playerSideScrolling } from "../entities/player.js";
-import { spawnDebugEntity } from "../entities/debug.js";
+import { spawnGoblin } from "../entities/goblin.js";
 
 export default async function cave(k) {
   setBackgroundColor("#313131");
 
   const caveData = await fetchData("./assets/data/cave.json");
   const collisions = caveData.layers.find((layer) => layer.name === "collisions").objects;
-  const entities = caveData.layers.find((layer) => layer.name === "entities").objects;
+  const enemies = caveData.layers.find((layer) => layer.name === "enemies").objects;
 
   //render base map layer and collisions
-  const map = k.add([k.sprite("cave"), k.pos(0, 32), k.scale(2)]);
+  const map = k.add([k.sprite("cave")]);
   for (const col of collisions) map.add(generateCollision(col));
 
   //interactions
 
   //spawn player
-  playerState.set("position", { x: 200, y: 700 });
+  playerState.set("position", { x: 200, y: 600 });
   const player = k.add(playerSideScrolling());
-  player.setControls();
+  player.setup();
 
   //spawn enemies
-  for (const ent of entities) {
-    const entity = map.add(spawnDebugEntity(k, ent));
-    console.log("Spawned entity at: ", ent.x, ent.y);
-    entity.setEvents();
-    entity.setBehavior();
+  for (const enemy of enemies) {
+    if (enemy.name === "goblin") {
+      const goblin = map.add(spawnGoblin(k, enemy));
+      console.log("Goblin spawned at: ", enemy.x, enemy.y);
+      goblin.setEvents();
+      goblin.setBehavior();
+    }
   }
 
   //render top map layer

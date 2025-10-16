@@ -3,22 +3,22 @@
  "infinite":false,
  "layers":[
         {
+         "id":5,
+         "image":"..\/maps\/cave.png",
+         "imageheight":828,
+         "imagewidth":1788,
+         "name":"Image Layer 1",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "draworder":"topdown",
          "id":4,
-         "name":"entities",
+         "name":"enemies",
          "objects":[
-                {
-                 "height":0,
-                 "id":26,
-                 "name":"goblin",
-                 "point":true,
-                 "rotation":0,
-                 "type":"enemy",
-                 "visible":true,
-                 "width":0,
-                 "x":147,
-                 "y":98
-                }, 
                 {
                  "height":0,
                  "id":27,
@@ -28,32 +28,44 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":301,
-                 "y":304
+                 "x":425,
+                 "y":182
                 }, 
                 {
                  "height":0,
-                 "id":29,
+                 "id":31,
                  "name":"goblin",
                  "point":true,
                  "rotation":0,
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":611,
-                 "y":112
+                 "x":505,
+                 "y":569
                 }, 
                 {
                  "height":0,
-                 "id":30,
+                 "id":32,
                  "name":"goblin",
                  "point":true,
                  "rotation":0,
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":746,
-                 "y":362
+                 "x":1234,
+                 "y":200
+                }, 
+                {
+                 "height":0,
+                 "id":33,
+                 "name":"goblin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":1402,
+                 "y":700
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -67,214 +79,214 @@
          "name":"collisions",
          "objects":[
                 {
-                 "height":32,
+                 "height":63.1,
                  "id":7,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":320,
-                 "x":96,
-                 "y":128
+                 "width":631,
+                 "x":192,
+                 "y":256
                 }, 
                 {
-                 "height":32,
+                 "height":63.1,
                  "id":8,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":64,
-                 "y":160
+                 "width":189.3,
+                 "x":128,
+                 "y":320
                 }, 
                 {
-                 "height":192,
+                 "height":378.6,
                  "id":9,
                  "name":"exit",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":16,
-                 "x":48,
-                 "y":192
+                 "width":31.55,
+                 "x":96,
+                 "y":384
                 }, 
                 {
-                 "height":16,
+                 "height":31.55,
                  "id":10,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":64,
-                 "y":384
+                 "width":189.3,
+                 "x":130.55,
+                 "y":765.97
                 }, 
                 {
-                 "height":64,
+                 "height":126.2,
                  "id":11,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":192,
-                 "x":160,
-                 "y":320
+                 "width":378.6,
+                 "x":320,
+                 "y":640
                 }, 
                 {
-                 "height":32,
+                 "height":63.1,
                  "id":12,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":480,
-                 "y":160
+                 "width":189.3,
+                 "x":960,
+                 "y":320
                 }, 
                 {
-                 "height":128,
+                 "height":252.4,
                  "id":13,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":64,
-                 "x":512,
-                 "y":32
+                 "width":126.2,
+                 "x":1024,
+                 "y":64
                 }, 
                 {
-                 "height":32,
+                 "height":63.1,
                  "id":14,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":576,
-                 "y":128
+                 "width":189.3,
+                 "x":1152,
+                 "y":256
                 }, 
                 {
-                 "height":64,
+                 "height":126.2,
                  "id":15,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":192,
-                 "x":448,
-                 "y":256
+                 "width":378.6,
+                 "x":896,
+                 "y":512
                 }, 
                 {
-                 "height":64,
+                 "height":126.2,
                  "id":16,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":448,
-                 "y":320
+                 "width":189.3,
+                 "x":896,
+                 "y":640
                 }, 
                 {
-                 "height":16,
+                 "height":31.55,
                  "id":17,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":352,
-                 "y":352
+                 "width":189.3,
+                 "x":704,
+                 "y":704
                 }, 
                 {
-                 "height":16,
+                 "height":31.55,
                  "id":18,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":256,
-                 "x":544,
-                 "y":384
+                 "width":504.8,
+                 "x":1088,
+                 "y":768
                 }, 
                 {
-                 "height":64,
+                 "height":126.2,
                  "id":19,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":736,
-                 "y":192
+                 "width":189.3,
+                 "x":1472,
+                 "y":384
                 }, 
                 {
-                 "height":32,
+                 "height":63.1,
                  "id":20,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":32,
-                 "x":768,
-                 "y":256
+                 "width":63.1,
+                 "x":1536,
+                 "y":512
                 },
             
                 {
-                 "height":96,
+                 "height":189.3,
                  "id":21,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":16,
-                 "x":800,
-                 "y":288
+                 "width":31.55,
+                 "x":1600,
+                 "y":576
                 }, 
                 {
-                 "height":128,
+                 "height":252.4,
                  "id":22,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":16,
-                 "x":832,
-                 "y":64
+                 "width":31.55,
+                 "x":1664,
+                 "y":128
                 }, 
                 {
-                 "height":16,
+                 "height":31.55,
                  "id":23,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":256,
-                 "x":576,
-                 "y":48
+                 "width":504.8,
+                 "x":1168,
+                 "y":96
                 }, 
                 {
-                 "height":96,
+                 "height":189.3,
                  "id":24,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":16,
-                 "x":80,
-                 "y":32
+                 "width":31.55,
+                 "x":160,
+                 "y":64
                 }, 
                 {
-                 "height":16,
+                 "height":31.55,
                  "id":25,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":416,
-                 "x":96,
-                 "y":16
+                 "width":820.3,
+                 "x":192,
+                 "y":32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -282,8 +294,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":31,
+ "nextlayerid":6,
+ "nextobjectid":34,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

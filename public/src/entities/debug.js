@@ -1,11 +1,11 @@
 //debug function to spawn test entities
-export function spawnDebugEntity(k, entity) {
+export function spawnDebugEntity(k, position) {
   return [
     k.rect(25, 30),
     k.outline(1),
 
     k.area({ shape: new k.Rect(k.vec2(0), 25, 30) }),
-    k.pos(entity.x, entity.y),
+    k.pos(position.x, position.y),
     k.anchor("center"),
     k.body({ mass: 100 }),
     k.doubleJump(),
@@ -23,6 +23,34 @@ export function spawnDebugEntity(k, entity) {
       range: 100,
       isAttacking: false,
       isFrozen: false,
+
+      setEvents() {
+        // this.on("customEvent", () => {
+        //   console.log("Custom event triggered on debug entity!");
+        // });
+
+        this.onHurt(() => {
+          console.log("Debug entity hurt! Current HP: " + this.hp());
+          if (this.hp() <= 0) {
+            console.log("Debug entity died!");
+            this.destroy();
+          }
+        });
+
+        //>>>>>>>>><<<<<<<<<<<\\
+        // this.onCollide("playerSword", (sword) => {
+        //   console.log("Debug entity hit by sword!");
+        //   this.doubleJump(250);
+        //   this.hurt(sword.atk);
+        //   sword.destroy();
+        // });
+
+        this.on("onAttacked", (damage) => {
+          console.log("debug attacked!");
+          this.doubleJump(250);
+          this.hurt(damage);
+        });
+      },
 
       setBehavior() {
         const player = k.get("player")[0]; //, { recursive: true })[0];
@@ -93,42 +121,7 @@ export function spawnDebugEntity(k, entity) {
           //player bounce away from this enity
           //move this to player.js if there are more player collision events
           player.doubleJump(150);
-
           player.hurt(this.attackPower);
-        });
-      },
-
-      setEvents() {
-        // this.on("customEvent", () => {
-        //   console.log("Custom event triggered on debug entity!");
-        // });
-
-        // this.onBeforePhysicsResolve((collision) => {
-        //   if (collision.target.is("player")) {
-        //     collision.preventResolution();
-        //   }
-        // });
-
-        this.onHurt(() => {
-          console.log("Debug entity hurt! Current HP: " + this.hp());
-          if (this.hp() <= 0) {
-            console.log("Debug entity died!");
-            this.destroy();
-          }
-        });
-
-        //>>>>>>>>><<<<<<<<<<<\\
-        // this.onCollide("playerSword", (sword) => {
-        //   console.log("Debug entity hit by sword!");
-        //   this.doubleJump(250);
-        //   this.hurt(sword.atk);
-        //   sword.destroy();
-        // });
-
-        this.on("onAttacked", (damage) => {
-          console.log("debug attacked!");
-          this.doubleJump(250);
-          this.hurt(damage);
         });
       },
     },

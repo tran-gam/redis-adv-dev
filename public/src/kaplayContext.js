@@ -24,14 +24,26 @@ k.loadSprite("player", "assets/player.png", {
     "run-side": { from: 18, to: 23, speed: 10, loop: true },
     "run-down": { from: 24, to: 29, speed: 10, loop: true },
     "run-up": { from: 30, to: 35, speed: 10, loop: true },
-    "attack1-side": { from: 36, to: 41, speed: 15, loop: false },
-    "attack2-side": { from: 42, to: 47, speed: 15, loop: false },
-    "attack1-down": { from: 48, to: 53, speed: 15, loop: false },
-    "attack2-down": { from: 54, to: 59, speed: 15, loop: false },
-    "attack1-up": { from: 60, to: 65, speed: 15, loop: false },
-    "attack2-up": { from: 66, to: 71, speed: 15, loop: false },
+    "attack1-side": { from: 36, to: 41, speed: 20, loop: false },
+    "attack2-side": { from: 42, to: 47, speed: 20, loop: false },
+    "attack1-down": { from: 48, to: 53, speed: 20, loop: false },
+    "attack2-down": { from: 54, to: 59, speed: 20, loop: false },
+    "attack1-up": { from: 60, to: 65, speed: 20, loop: false },
+    "attack2-up": { from: 66, to: 71, speed: 20, loop: false },
     "jump": 18,
     "fall": 38,
+  },
+});
+
+k.loadSprite("goblin", "assets/goblin.png", {
+  sliceX: 6,
+  sliceY: 3,
+  width: 32,
+  height: 32,
+  anims: {
+    "idle": { from: 0, to: 5, speed: 10, loop: true },
+    "run": { from: 6, to: 11, speed: 10, loop: true },
+    "attack": { from: 12, to: 17, speed: 10, loop: false },
   },
 });
 

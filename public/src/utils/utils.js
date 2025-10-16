@@ -135,19 +135,10 @@ export async function blinkEffect(entity) {
   await k.tween(entity.opacity, 1, 0.1, (val) => (entity.opacity = val), k.easings.linear);
 }
 
-export function onAttacked(entity) {
-  entity.onCollide("swordHitBox", async () => {
-    if (entity.isAttacking) return;
-
-    if (entity.hp() <= 0) {
-      k.destroy(entity);
-    }
-
-    await blinkEffect(k, entity);
-    entity.hurt(1);
-  });
-}
-
 export function clamp(num, min, max) {
   return num <= min ? min : num >= max ? max : num;
+}
+
+export function randomIntRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + 1);
 }

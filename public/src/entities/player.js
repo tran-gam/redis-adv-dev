@@ -3,6 +3,7 @@ import { playerState, gameState } from "../states/stateManager.js";
 import { areAnyOfTheseKeysDown, playAnimIfNotPlaying, debugLog } from "../utils/utils.js";
 import { savePlayerData } from "../utils/saveload.js";
 
+// top-down player setup
 export function playerTopDown() {
   //generate player with top down components
   return [
@@ -32,40 +33,7 @@ export function playerTopDown() {
   ];
 }
 
-// side scrolling player setup\\
-//
-//
-export function playerSideScrolling() {
-  //generate player with side scrolling components
-  return [
-    k.sprite("player", { anim: "idle-side" }),
-    k.area({ shape: new k.Rect(k.vec2(0, 0), 45, 60) }),
-    k.anchor("center"),
-    k.body({ mass: 100, jumpForce: 550 }),
-    // k.body(),
-    k.pos(playerState.get().position.x, playerState.get().position.y),
-    k.opacity(),
-    k.timer(),
-    // k.scale(1),
-    k.doubleJump(2),
-    k.health(playerState.get().health),
-    "player",
-    {
-      speed: 200,
-      attackPower: 1,
-      attackCombo: 1,
-      attackComboMax: 2,
-      direction: "side",
-      isAttacking: false,
-      isFrozen: false,
-      setControls() {
-        setControlsSideScrolling(this);
-      },
-    },
-  ];
-}
-
-// top down controls \\
+// top-down controls \\
 //
 //
 export function setControlsTopDown(player) {
@@ -192,7 +160,64 @@ export function setControlsTopDown(player) {
   // });
 }
 
-// side scrolling controls \\
+// side-scrolling player setup\\
+//
+//
+export function playerSideScrolling() {
+  //generate player with side scrolling components
+  return [
+    k.sprite("player", { anim: "idle-side" }),
+    k.area({ shape: new k.Rect(k.vec2(0), 45, 55) }),
+    k.anchor("center"),
+    k.body({ mass: 100, jumpForce: 550 }),
+    // k.body(),
+    k.pos(playerState.get().position.x, playerState.get().position.y),
+    k.opacity(),
+    k.timer(),
+    // k.scale(1),
+    k.doubleJump(2),
+    k.health(playerState.get().health),
+    "player",
+    {
+      speed: 200,
+      attackPower: 1,
+      attackCombo: 1,
+      attackComboMax: 2,
+      direction: "side",
+      isAttacking: false,
+      isFrozen: false,
+      setup() {
+        setBehaviorSideScrolling(this);
+        setControlsSideScrolling(this);
+      },
+    },
+  ];
+}
+
+//side-scrolling behaviors
+//
+//
+export function setBehaviorSideScrolling(player) {
+  player.onHurt(() => {
+    console.log("player hurt, current HP: " + player.hp());
+    if (player.hp() <= 0) {
+      console.log("player died");
+    }
+  });
+
+  //collision
+  // player.onCollide((other, collision) => {
+  //   console.log("collided with:", other.tags[1]);
+  //   console.log(collision);
+  // });
+
+  player.onCollide("enemy", (enemy) => {
+    player.doubleJump(150);
+    player.hurt(enemy.attackPower);
+  });
+}
+
+// side-scrolling controls \\
 //
 //
 export function setControlsSideScrolling(player) {
@@ -280,8 +305,9 @@ export function setControlsSideScrolling(player) {
     const sword = player.add([
       k.area({
         shape: new k.Rect(k.vec2(player.flipX ? -70 : 35, -10), 40, 10),
-        collisionIgnore: ["", "boundary", "platform"],
+        collisionIgnore: ["", "player", "boundary", "platform"],
       }),
+      //required for moving sword hitbox
       // k.pos(),
       // k.rotate(),
       // k.timer(),
@@ -289,26 +315,30 @@ export function setControlsSideScrolling(player) {
       // k.anchor("left"),
       "playerSword",
       {
-        damage: player.attackPower, //assign or calculate damage
-        slash() {
-          //lerp move sword hitbox, more efficient than tween, requires k.animate()
-          // this.animate("pos", [k.vec2(0, 0), k.vec2(player.flipX ? -50 : 50, 50)], {
-          //   duration: 0.3,
-          // });
+        //assign or calculate damage
+        damage: player.attackPower,
 
-          //rotate sword hitbox, requires k.rotate() & k.timer()
-          // this.tween(0, player.flipX ? -90 : 90, 0.3, (val) => (this.angle = val));
+        //moving sword hitbox
+        // slash() {
+        //   //lerp move sword hitbox, more efficient than tween, requires k.animate()
+        //   // this.animate("pos", [k.vec2(0, 0), k.vec2(player.flipX ? -50 : 50, 50)], {
+        //   //   duration: 0.3,
+        //   // });
 
-          console.log("sword slash");
-          this.onCollide((other) => {
-            console.log("sword hit: ", other.tags[1]);
-            other.trigger("onAttacked", this.damage); //pass damage here
-            this.destroy();
-          });
-        },
+        //   //rotate sword hitbox, requires k.rotate() & k.timer()
+        //   // this.tween(0, player.flipX ? -90 : 90, 0.3, (val) => (this.angle = val));
+
+        //   console.log("playerSword slash");
+        //   this.onCollide((other) => {
+        //     console.log("sword hit: ", other.tags[1]);
+        //     other.hurt(this.damage); //pass damage here
+        //     // other.trigger("onAttacked", this.damage);
+        //     this.destroy();
+        //   });
+        // },
       },
     ]);
-    sword.slash();
+    // sword.slash();
 
     //jump attack animation attempt
     // if (player.isJumping()) {
@@ -333,7 +363,7 @@ export function setControlsSideScrolling(player) {
     player.attackCombo = player.attackCombo < player.attackComboMax ? player.attackCombo + 1 : 1;
   });
 
-  //on animation end
+  //on attack animation end
   player.onAnimEnd((anim) => {
     if (anim.substring(0, 6) === "attack") {
       // console.log("Attack animation ended");
@@ -350,18 +380,4 @@ export function setControlsSideScrolling(player) {
 
     k.setCamPos(player.worldPos());
   });
-
-  //collision
-  //prevent sword collision with player
-  // player.onBeforePhysicsResolve((collision) => {
-  // if (collision.target.is("playerSword")) {
-  //   //ignore collision with sword
-  //   collision.resolve = false;
-  // }
-  // });
-
-  // player.onCollide((other, collision) => {
-  //   console.log("collided with:", other.tags[1]);
-  //   console.log(collision);
-  // });
 }
